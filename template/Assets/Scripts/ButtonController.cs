@@ -30,8 +30,8 @@ public class ButtonController : MonoBehaviour
     private void ConfigureInterstitialButton()
     {
         interstitialButton.OnClickAsObservable()
-            .ThrottleFirst(TimeSpan.FromMilliseconds(ButtonThrottleTimeMs))
-            .TakeUntilDestroy(this)
+            //.ThrottleFirst(TimeSpan.FromMilliseconds(ButtonThrottleTimeMs))
+            //.TakeUntilDestroy(this)
             .Subscribe(_ => ShowAd());
     }
 
@@ -48,6 +48,7 @@ public class ButtonController : MonoBehaviour
         {
             // ‰æ–Ê‘JˆÚ‚Æ‚©
             //SceneManager.LoadScene("TitleScene");
+            Debug.Log("koko");
         }
     }
 
