@@ -80,6 +80,8 @@ crashlytics-build.properties
 /[Aa]ssets/Feel/NiceVibrations/Demo
 /[Aa]ssets/Feel/NiceVibrations/HapticSamples
 
+/[Aa]ssets/polyperfect
+/[Aa]ssets/Fonts
 
 *.vsconfig
-
+*.fbx

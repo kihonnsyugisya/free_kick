@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d720df719f3da4ed5b0add36c6064075, type: 3}
   m_Name: AdUnitIDs
   m_EditorClassIdentifier: 
-  isTest: 0
+  isTest: 1
   bannerIOS: ca-app-pub-3957084734439209/6964926923
   bannerAndroid: ca-app-pub-3957084734439209/7964778284
   testBannerIOS: ca-app-pub-3940256099942544/2934735716
