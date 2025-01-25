@@ -73,6 +73,7 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # FeelDemosディレクトリを無視
+/[Aa]ssets/Feel/
 /[Aa]ssets/Feel/FeelDemos/
 /[Aa]ssets/Feel/MMFeedbacks/Demos/MMFeedbacksDemo
 /[Aa]ssets/Feel/MMFeedbacks/Demos/SequencingDemo
@@ -82,6 +83,10 @@ crashlytics-build.properties
 
 /[Aa]ssets/polyperfect
 /[Aa]ssets/Fonts
+
+/[Aa]ssets/GUIPackCartoon
+
+/[Aa]ssets/Plugins/Demigiant
 
 *.vsconfig
 *.fbx
