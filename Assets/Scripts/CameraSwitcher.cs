@@ -7,6 +7,8 @@ public class CameraSwitcher : MonoBehaviour
     [SerializeField] private CinemachineCamera kickerCam;
     [SerializeField] private CinemachineCamera ballCam;
 
+    public static CameraSwitcher Instance { get; private set; }
+
     public void SwitchToKickerCamera()
     {
         Observable.Timer(System.TimeSpan.FromSeconds(0.5)) // 0.5ïbå„Ç…í ímÇî≠çs

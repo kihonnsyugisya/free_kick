@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using UniRx;
 using Unity.VisualScripting;
@@ -7,40 +7,42 @@ using System;
 using TMPro;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DG.Tweening.Core.Easing;
+using UnityEngine.SceneManagement;
 
 /// <summary>
-/// ƒ{[ƒ‹‚ÌQÆ‚Í‚±‚ÌƒNƒ‰ƒXˆêŒÂ‚ÅƒRƒ“ƒgƒ[ƒ‹‚·‚é
-/// ‚æ‚Á‚ÄAƒ{[ƒ‹‚ÌÄ”z’uiƒŠƒgƒ‰ƒCj‚âƒ{[ƒ‹‚É—Í‚ğ—^‚¦‚é‚Ì‚à‚±‚ÌƒNƒ‰ƒX
-/// —‘z‚ÍUI‚Í•ÊƒNƒ‰ƒX‚É•ª‚¯‚ÄAƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½’Ê’m‚ğ‚±‚ÌƒNƒ‰ƒX‚Åw“Ç‚·‚éŒ`‚É‚µ‚½‚¢
+/// ãƒœãƒ¼ãƒ«ã®æŒ™å‹•ã‚’åˆ¶å¾¡ã™ã‚‹UIã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼
+/// ç”»é¢ä¸Šã®ãƒœã‚¿ãƒ³ã‚„ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ãªã©ã‚’ç®¡ç†ã—ã€ãƒœãƒ¼ãƒ«ã®æ“ä½œã‚’è¡Œã†ã‚¯ãƒ©ã‚¹
+/// ã‚¹ãƒ†ãƒ¼ã‚¸è¡¨ç¤ºç”¨ã®UIã¯åˆ¥ã‚¯ãƒ©ã‚¹ã§ç®¡ç†ã—ã€ãƒœã‚¿ãƒ³æ“ä½œãªã©ã®æ©Ÿèƒ½ã«ç‰¹åŒ–ã•ã›ã‚‹
 /// </summary>
 public class UIController : MonoBehaviour
 {
-    // ---- UIŠÖ˜A -------------------------
-    [Header("UIŠÖ˜A ---------------------------------------")]
+    // ---- UIè¦ç´  -------------------------
+    [Header("UIè¦ç´  ---------------------------------------")]
     [SerializeField] private Button retryButton;
     public Button kickButton;
-    [SerializeField] private SliderController powerSlider;   
+    [SerializeField] private SliderController powerSlider;
     [SerializeField] private Slider yAxisSlider;
     [SerializeField] private CanvasGroup stageTexts;
     [SerializeField] private TextMeshProUGUI stageNum;
     [SerializeField] private CanvasGroup clearText;
-    [SerializeField] private CanvasGroup darkScreen; // ˆÃ“]—p‚ÌCanvasGroup
+    [SerializeField] private CanvasGroup darkScreen; // ç”»é¢æš—è»¢ç”¨CanvasGroup
     [SerializeField] private GameObject controllUIs;
 
-    // ---- ƒQ[ƒ€ƒRƒ“ƒgƒ[ƒ‰ŠÖ˜A -------------------------
-    [Header("ƒQ[ƒ€ƒRƒ“ƒgƒ[ƒ‰ŠÖ˜A ------------------------")]
+    // ---- ã‚²ãƒ¼ãƒ ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼è¦ç´  -------------------------
+    [Header("ã‚²ãƒ¼ãƒ ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼è¦ç´  ------------------------")]
     [SerializeField] private GameObject ball;
     [SerializeField] private Transform startPos;
     public FreeKicker freeKicker;
-    [SerializeField] private SoccerBall soccerBall;  // ƒTƒbƒJ[ƒ{[ƒ‹‚Ì Rigidbody
+    [SerializeField] private SoccerBall soccerBall;  // ã‚µãƒƒã‚«ãƒ¼ãƒœãƒ¼ãƒ«ã® Rigidbody
     [SerializeField] private CameraSwitcher cameraSwitcher;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         freeKicker.ball = ball.transform;
+        darkScreen.alpha = 0f; // åˆæœŸçŠ¶æ…‹ã§é€æ˜ã«è¨­å®š
 
-        darkScreen.alpha = 0f; // ‰Šúó‘Ô‚ğŠ®‘S‚É”ñ•\¦‚Éİ’è
+        ShowStageText(SceneManager.GetActiveScene().name);
 
         yAxisSlider.OnValueChangedAsObservable().Subscribe(value => {
             freeKicker.kickDirection.y = value;
@@ -53,23 +55,16 @@ public class UIController : MonoBehaviour
         kickButton.onClick.AddListener(() => {
             powerSlider.StopSlider();
             freeKicker.kickForce = powerSlider.powerSlider.value;
-            freeKicker.KickBall(); 
+            freeKicker.KickBall();
         });
 
         freeKicker.kickerKnee.OnBallHit.Subscribe(_ => {
             Shoot();
         }).AddTo(this);
 
-        freeKicker.hasKicked.Skip(1).Subscribe(value => { 
+        freeKicker.hasKicked.Skip(1).Subscribe(value => {
             ShowControllUis(!value);
         }).AddTo(this);
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void Retry()
@@ -81,26 +76,21 @@ public class UIController : MonoBehaviour
         cameraSwitcher.SwitchToKickerCamera();
     }
 
-
     /// <summary>
-    /// ƒ{[ƒ‹‚É—Í‚ğ‰Á‚¦‚Ä”ò‚Î‚·
-    /// —Í‰ÁŒ¸‚ÍƒLƒbƒJ[‚ğQÆ‚·‚é
+    /// ãƒœãƒ¼ãƒ«ã‚’è¹´ã‚‹å‡¦ç†
     /// </summary>
     private void Shoot()
     {
-        // AddForce‚Åƒ{[ƒ‹‚ğ”ò‚Î‚·
-        soccerBall.rigidbody.AddForce(freeKicker.kickDirection.normalized * freeKicker.kickForce, ForceMode.Impulse);
+        soccerBall.GetComponent<Rigidbody>().AddForce(freeKicker.kickDirection.normalized * freeKicker.kickForce, ForceMode.Impulse);
         cameraSwitcher.SwitchToBallCamera();
     }
 
     private void ResetBall()
     {
-        soccerBall.rigidbody.angularVelocity = Vector3.zero;
-        soccerBall.rigidbody.linearVelocity = Vector3.zero;
+        soccerBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+        soccerBall.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
         ball.transform.position = startPos.position;
     }
-
-    // "UIŠÖ˜A ---------------------------------------"
 
     public void ShowClearText()
     {
@@ -109,6 +99,13 @@ public class UIController : MonoBehaviour
         {
             ui.gameObject.SetActive(false);
         }
+    }
+
+    private void ShowStageText(string stageName)
+    {
+        stageNum.text = stageName;
+        FadeIn(stageTexts);
+        FadeOut(stageTexts);
     }
 
     public void ShowControllUis(bool isShow)
@@ -121,29 +118,39 @@ public class UIController : MonoBehaviour
 
     public async Task FadeToBlackForOneSecond()
     {
-        // ƒtƒF[ƒhƒCƒ“iˆÃ“]ŠJnj
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ï¼ˆæš—è»¢é–‹å§‹ï¼‰
         FadeIn(darkScreen);
 
-        // ƒtƒF[ƒhƒCƒ“ŠÔ + ˆÃ“]ŠÔ‚ğ‘Ò‹@ (0.7•b + 1.0•b)
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³å®Œäº†å¾Œã€æš—è»¢çŠ¶æ…‹ã‚’ç¶­æŒã™ã‚‹æ™‚é–“ (0.7ç§’ + 1.0ç§’)
         await Task.Delay(1700);
 
-        // ƒtƒF[ƒhƒAƒEƒgiˆÃ“]I—¹j
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆï¼ˆæš—è»¢è§£é™¤ï¼‰
         FadeOut(darkScreen);
     }
 
-    // FadeOutƒƒ\ƒbƒh
+    public async Task ShowStageText(GameObject stageText)
+    {
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ï¼ˆæš—è»¢é–‹å§‹ï¼‰
+        FadeIn(darkScreen);
+
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³å®Œäº†å¾Œã€æš—è»¢çŠ¶æ…‹ã‚’ç¶­æŒã™ã‚‹æ™‚é–“ (0.7ç§’ + 1.0ç§’)
+        await Task.Delay(1700);
+
+        // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆï¼ˆæš—è»¢è§£é™¤ï¼‰
+        FadeOut(darkScreen);
+    }
+
+    // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¢ã‚¦ãƒˆå‡¦ç†
     private void FadeOut(CanvasGroup canvasGroup)
     {
-        canvasGroup.alpha = 1f; // ‰Šúó‘Ô‚ğŠ®‘S‚É•\¦‚·‚é‚æ‚¤‚Éİ’è
-        canvasGroup.DOFade(0, 1f); // 1•bŠÔ‚ÅƒtƒF[ƒhƒAƒEƒg
+        canvasGroup.alpha = 1f;
+        canvasGroup.DOFade(0, 1f);
     }
 
-    // FadeInƒƒ\ƒbƒh
+    // ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³å‡¦ç†
     private void FadeIn(CanvasGroup canvasGroup)
     {
-        canvasGroup.alpha = 0f; // ‰Šúó‘Ô‚ğŠ®‘S‚É”ñ•\¦‚Éİ’è
-        canvasGroup.DOFade(1, 1f); // 1•bŠÔ‚ÅƒtƒF[ƒhƒCƒ“
+        canvasGroup.alpha = 0f;
+        canvasGroup.DOFade(1, 1f);
     }
-
-
 }

@@ -2975,7 +2975,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!114 &1134807669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3007,8 +3007,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.73, y: 0.41, z: 0.04}
-  m_Center: {x: -0.000017687684, y: 0.29, z: -0.22}
+  m_Size: {x: 0.73, y: 0.31, z: 0.04}
+  m_Center: {x: -0.000017687684, y: 0.26, z: -0.17}
 --- !u!224 &1156139661 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1906911807832900395, guid: 1e441b0f575834740b0af814a1419e42, type: 3}

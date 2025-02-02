@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UniRx;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,10 +7,14 @@ public class StageController : MonoBehaviour
 {
     [SerializeField] private UIController uiController;
     [SerializeField] private List<CollisionReciver> goalObjs;
-    [Tooltip("ƒ{[ƒ‹‚ğ‚¯‚Á‚Ä‚©‚çA©“®“I‚ÉƒŠƒgƒ‰ƒC‚·‚é‚Ü‚Å‚ÌŠÔ")]
-    [SerializeField] private float retryCount = 5.5f;
 
-    private CompositeDisposable retrySubscription = new CompositeDisposable(); // ƒŠƒgƒ‰ƒCˆ—‚Ìw“Ç‚ğŠÇ—‚·‚é‚½‚ß‚ÌƒIƒuƒWƒFƒNƒg
+    [Tooltip("ãƒœãƒ¼ãƒ«ã‚’ã‘ã£ã¦ã‹ã‚‰ã€è‡ªå‹•çš„ã«ãƒªãƒˆãƒ©ã‚¤ã™ã‚‹ã¾ã§ã®æ™‚é–“")]
+    [SerializeField] private float retryTime = 5.5f;
+
+    [Tooltip("ã‚²ãƒ¼ãƒ å†…ã®ã‚µãƒƒã‚«ãƒ¼ãƒœãƒ¼ãƒ«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ")]
+    [SerializeField] private SoccerBall soccerBall;
+
+    private CompositeDisposable retrySubscription = new CompositeDisposable(); // ãƒªãƒˆãƒ©ã‚¤å‡¦ç†ã®è³¼èª­ç®¡ç†
 
     void Start()
     {
@@ -25,35 +29,62 @@ public class StageController : MonoBehaviour
         uiController.kickButton.onClick.AsObservable()
             .Subscribe(_ =>
             {
-                StartRetryTimer(); // ƒLƒbƒNƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½Û‚ÉƒŠƒgƒ‰ƒCƒ^ƒCƒ}[‚ğŠJn
+                StartRetryTimer(); // ã‚­ãƒƒã‚¯ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸéš›ã«ãƒªãƒˆãƒ©ã‚¤ã‚¿ã‚¤ãƒãƒ¼ã‚’é–‹å§‹
             }).AddTo(this);
     }
 
+    /// <summary>
+    /// ä¸€å®šæ™‚é–“å¾Œã«ãƒªãƒˆãƒ©ã‚¤ã‚’å®Ÿè¡Œã™ã‚‹
+    /// </summary>
     private void StartRetryTimer()
     {
-        // Šù‘¶‚ÌƒŠƒgƒ‰ƒCw“Ç‚ğ”jŠüi•K—v‚É‰‚¶‚ÄƒŠƒZƒbƒgj
+        // æ—¢å­˜ã®ãƒªãƒˆãƒ©ã‚¤è³¼èª­ã‚’ç ´æ£„ï¼ˆãƒªã‚»ãƒƒãƒˆï¼‰
         retrySubscription.Clear();
 
-        // ƒ^ƒCƒ}[w“Ç‚Ì“o˜^
-        Observable.Timer(System.TimeSpan.FromSeconds(retryCount))
-            .Subscribe(async _ =>
+        // æŒ‡å®šæ™‚é–“å¾Œã«ãƒªãƒˆãƒ©ã‚¤ãƒã‚§ãƒƒã‚¯
+        Observable.Timer(System.TimeSpan.FromSeconds(retryTime))
+            .Subscribe(_ =>
             {
-                await uiController.FadeToBlackForOneSecond();
-                uiController.Retry();
+                // ãƒœãƒ¼ãƒ«ãŒåœæ­¢ã—ã¦ã„ã‚‹å ´åˆã®ã¿ãƒªãƒˆãƒ©ã‚¤
+                if (soccerBall.IsStopped.Value)
+                {
+                    RetryStage();
+                }
+                else
+                {
+                    // ãƒœãƒ¼ãƒ«ãŒåœæ­¢ã™ã‚‹ã¾ã§ç›£è¦–ã—ã€åœæ­¢ã—ãŸã‚‰ãƒªãƒˆãƒ©ã‚¤ã‚’å®Ÿè¡Œ
+                    soccerBall.IsStopped
+                        .Where(isStopped => isStopped) // åœæ­¢ã—ãŸç¬é–“ã®ã¿å‡¦ç†
+                        .Take(1) // 1å›ã ã‘å®Ÿè¡Œ
+                        .Subscribe(__ => RetryStage())
+                        .AddTo(retrySubscription);
+                }
             })
-            .AddTo(retrySubscription); // CompositeDisposable‚É“o˜^
+            .AddTo(retrySubscription);
     }
 
-    private async void StageClear()
+    /// <summary>
+    /// ã‚¹ãƒ†ãƒ¼ã‚¸ã®ãƒªãƒˆãƒ©ã‚¤å‡¦ç†
+    /// </summary>
+    private async void RetryStage()
     {
-        // ƒNƒŠƒA‚ÉƒŠƒgƒ‰ƒCƒ^ƒCƒ}[‚ğƒLƒƒƒ“ƒZƒ‹
-        retrySubscription.Clear();
-
-        // 1•b‘Ò‹@‚ğ‹²‚Ş
-        await Task.Delay(1000);
-
-        uiController.ShowClearText();
         await uiController.FadeToBlackForOneSecond();
         uiController.Retry();
+    }
+
+    /// <summary>
+    /// ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¯ãƒªã‚¢å‡¦ç†
+    /// </summary>
+    private async void StageClear()
+    {
+        // ã‚¯ãƒªã‚¢æ™‚ã«ãƒªãƒˆãƒ©ã‚¤ã‚¿ã‚¤ãƒãƒ¼ã‚’ã‚­ãƒ£ãƒ³ã‚»ãƒ«
+        retrySubscription.Clear();
+
+        uiController.ShowClearText();
+        //await uiController.FadeToBlackForOneSecond();
+        //uiController.Retry();
+        await Task.Delay(1200);
+
+        SceneListUtility.LoadNextStage();
     }
 }

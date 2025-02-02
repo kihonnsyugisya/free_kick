@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,140 +7,106 @@ public class FreeKicker : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Transform playerStartPos;
+    [SerializeField] private Transform ballStartPos; // ãƒœãƒ¼ãƒ«ã®åˆæœŸä½ç½®ã‚’æŒ‡å®šã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 
-    // ---- ƒLƒbƒNƒpƒ‰ƒ[ƒ^ŠÖ˜A -------------------------
-    [HideInInspector] public float kickForce;    // ƒLƒbƒN‚Ì‹­‚³
+    [HideInInspector] public float kickForce;
     [HideInInspector] public Vector3 kickDirection;
 
-    // ’Ê’mê—p‚ÌSubject
     public CollisionReciver kickerKnee;
+    [HideInInspector] public Transform ball;
 
-    [HideInInspector] public Transform ball; // ƒ{[ƒ‹i’†Sj‚ÌTransform
-    [Header("Orbit Settings")]
-    [Tooltip("ƒvƒŒƒCƒ„[‚Æƒ{[ƒ‹‚Ì‹——£i‰~‚Ì”¼Œaj")]
-    public float orbitRadius = 2f; // ‰~‹O“¹‚Ì”¼Œa
-    [Tooltip("ƒXƒƒCƒv‚É‚æ‚é‰ñ“]‘¬“x")]
-    public float rotationSpeed = 5f; // ‰ñ“]‘¬“x
+    [Tooltip("ã‚¹ãƒ¯ã‚¤ãƒ—ã«ã‚ˆã‚‹å›è»¢é€Ÿåº¦")]
+    public float rotationSpeed = 5f;
 
-    private float currentAngle = 0f; // Œ»İ‚Ì‰ñ“]Šp“x
-    private Vector2 startTouchPosition; // ƒXƒƒCƒv‚ÌŠJnˆÊ’u
-    private Vector2 currentTouchPosition; // Œ»İ‚Ìƒ^ƒbƒ`ˆÊ’u
+    private float currentAngle = -90f; // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§ -90Â° ã«è¨­å®š
+    private Vector2 startTouchPosition;
     private bool isSwiping = false;
 
-    private static readonly int KickStateHash = Animator.StringToHash("FreeKick"); // ƒAƒjƒ[ƒVƒ‡ƒ“ó‘Ô‚ÌƒnƒbƒVƒ…
+    private static readonly int KickStateHash = Animator.StringToHash("FreeKick");
 
-    [HideInInspector] public BoolReactiveProperty hasKicked = new(); // ƒLƒbƒN‚µ‚½‚©‚Ç‚¤‚©‚ğ”»’è‚·‚éƒtƒ‰ƒO
+    [HideInInspector] public BoolReactiveProperty hasKicked = new();
 
     void Start()
     {
+        // åˆæœŸä½ç½® & å›è»¢ã‚’è¨­å®š
+        transform.position = playerStartPos.position;
+        transform.rotation = Quaternion.Euler(0, currentAngle, 0);
 
+        UpdateBallPosition(); // ãƒœãƒ¼ãƒ«ã®ä½ç½®ã‚’æ›´æ–°
     }
 
     void Update()
     {
-        // ƒLƒbƒNŒã‚ÍUpdatePlayerPosition‚ğŒÄ‚Ño‚³‚È‚¢
         if (!hasKicked.Value)
         {
             HandleSwipe();
-            UpdatePlayerPosition();
         }
     }
 
-    // ƒLƒbƒNƒCƒxƒ“ƒg‚ÅŒÄ‚Ño‚·ƒƒ\ƒbƒh
     public void KickBall()
     {
-        animator.Play(KickStateHash); // ƒLƒbƒNƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶
-        hasKicked.Value = true; // ƒLƒbƒN‚µ‚½ƒtƒ‰ƒO‚ğİ’è                          
-        CalculateKickDirection();// ƒ{[ƒ‹‚ªR‚ç‚ê‚é•ûŒü‚ğŒvZ
+        animator.Play(KickStateHash);
+        hasKicked.Value = true;
+        CalculateKickDirection();
     }
 
     public void Retry()
     {
+        // ä½ç½®ã®ã¿ãƒªã‚»ãƒƒãƒˆã—ã€å›è»¢ã¯ãƒªã‚»ãƒƒãƒˆã—ãªã„
         transform.position = playerStartPos.position;
+
         animator.applyRootMotion = false;
-        transform.rotation = Quaternion.identity;
         animator.applyRootMotion = true;
-        hasKicked.Value = false; // ƒLƒbƒN‚µ‚½ƒtƒ‰ƒO‚ğƒŠƒZƒbƒg
+
+        hasKicked.Value = false;
+
+        UpdateBallPosition(); // ãƒœãƒ¼ãƒ«ã®ä½ç½®ã‚’å†è¨­å®š
     }
 
     private void HandleSwipe()
     {
-        // ƒ^ƒbƒ`‚ª‘¶İ‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ğƒ`ƒFƒbƒN
-        if (Input.touchCount == 0)
-            return;
+        if (Input.touchCount == 0) return;
+        if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) return;
 
-        // UI‚ªƒ^ƒbƒ`‚ğó‚¯æ‚Á‚Ä‚¢‚éê‡AƒXƒƒCƒvˆ—‚ğ–³‹
-        if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
-        {
-            // nGUIã‚ğƒNƒŠƒbƒN‚µ‚Ä‚¢‚é‚Ì‚Åˆ—‚ğƒLƒƒƒ“ƒZƒ‹‚·‚éB
-            return;
-        }
-
-        Touch touch = Input.GetTouch(0);  // Å‰‚Ìƒ^ƒbƒ`‚ğæ“¾
+        Touch touch = Input.GetTouch(0);
 
         switch (touch.phase)
         {
             case TouchPhase.Began:
-                // ƒXƒƒCƒv‚ÌŠJnˆÊ’u‚ğ‹L˜^
                 startTouchPosition = touch.position;
                 isSwiping = true;
                 break;
-
             case TouchPhase.Moved:
                 if (isSwiping)
                 {
-                    // ƒXƒƒCƒv’†‚ÌŒ»İ‚ÌˆÊ’u
-                    currentTouchPosition = touch.position;
-
-                    // …•½•ûŒü‚ÌˆÚ“®—Ê‚ğŒvZ
-                    float deltaX = currentTouchPosition.x - startTouchPosition.x;
-
-                    // Šp“x‚ğXV
+                    float deltaX = touch.position.x - startTouchPosition.x;
                     currentAngle += deltaX * rotationSpeed * Time.deltaTime;
-
-                    // Œ»İ‚ÌˆÊ’u‚ğV‚½‚ÈŠJnˆÊ’u‚Æ‚µ‚Ä‹L˜^
-                    startTouchPosition = currentTouchPosition;
+                    currentAngle = Mathf.Clamp(currentAngle, -180f, 0f); // å³æ‰‹ã‹ã‚‰å·¦æ‰‹ã®ç¯„å›²ã«åˆ¶é™
+                    transform.rotation = Quaternion.Euler(0, currentAngle, 0);
+                    startTouchPosition = touch.position;
+                    UpdateBallPosition();
                 }
                 break;
-
             case TouchPhase.Ended:
             case TouchPhase.Canceled:
-                // ƒXƒƒCƒvI—¹
                 isSwiping = false;
                 break;
         }
     }
 
-
-    private void UpdatePlayerPosition()
+    private void UpdateBallPosition()
     {
-        // ƒvƒŒƒCƒ„[‚ÌV‚µ‚¢ˆÊ’u‚ğŒvZi‰~‹O“¹j
-        float radianAngle = currentAngle * Mathf.Deg2Rad; // Šp“x‚ğƒ‰ƒWƒAƒ“‚É•ÏŠ·
-        Vector3 offset = new Vector3(Mathf.Cos(radianAngle), 0, Mathf.Sin(radianAngle)) * orbitRadius;
-
-        // ƒvƒŒƒCƒ„[‚ÌˆÊ’u‚ğXViy’l‚ğŒÅ’èj
-        Vector3 newPosition = ball.position + offset;
-        newPosition.y = transform.position.y; // ƒvƒŒƒCƒ„[‚Ì‚‚³‚Í•ÏX‚µ‚È‚¢
-        transform.position = newPosition;
-
-        // ƒvƒŒƒCƒ„[‚ğƒ{[ƒ‹‚ÌˆÊ’u‚ÉŒü‚¯‚éiy²‚¾‚¯j
-        Vector3 targetPosition = new Vector3(ball.position.x, transform.position.y, ball.position.z);
-        transform.LookAt(targetPosition);
-
-        // X²‚Ì‰ñ“]‚ğƒŠƒZƒbƒg
-        Vector3 rotation = transform.rotation.eulerAngles;
-        rotation.x = 0;
-        transform.rotation = Quaternion.Euler(rotation);
+        if (ball != null && ballStartPos != null)
+        {
+            // ãƒœãƒ¼ãƒ«ã‚’ `ballStartPos` ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«é…ç½®
+            ball.position = ballStartPos.position;
+        }
     }
 
-    // ƒvƒŒƒCƒ„[‚ªƒ{[ƒ‹‚ğR‚Á‚½•ûŒü‚ğŒvZ
     private void CalculateKickDirection()
     {
-        // ƒvƒŒƒCƒ„[‚ÌˆÊ’u‚©‚çƒ{[ƒ‹‚ÌˆÊ’u‚ğˆø‚¢‚ÄAR‚ç‚ê‚½•ûŒü‚ğæ“¾
-        Vector3 direction = (ball.position - transform.position).normalized;
+        Vector3 direction = transform.forward;
         direction.y = kickDirection.y;
-
-        kickDirection = direction; // ŒvZ‚µ‚½•ûŒü‚ğƒLƒbƒN•ûŒü‚É•Û‘¶
+        kickDirection = direction;
     }
-
 }

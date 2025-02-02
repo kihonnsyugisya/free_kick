@@ -88,5 +88,7 @@ crashlytics-build.properties
 
 /[Aa]ssets/Plugins/Demigiant
 
+/[Aa]ssets/BOXOPHOBIC/
+
 *.vsconfig
 *.fbx
