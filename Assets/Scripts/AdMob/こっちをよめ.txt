@@ -11,3 +11,16 @@ Assets/Scripts/AdMob/AdUnitIDs.asset
 の設定も忘れずに
 
 ATTはAdmobオブジェクトを配置するだけでいい感じに呼び出してくれるようにしてるから何も気にしなくても行けるようになってる
+
+
+
+インステの実装メモ
+ShowAdを呼び出すだけでよい。ただし呼び出すときにisSkipAdがtrueであるかをチェックしてからよびだす。読み込み失敗してたり広告の
+ストックが切れている場合falseになっているから。falseならしゃーなしShowAd呼び出さずに、そのあとの処理呼び出すアプローチが一般的。
+
+広告が閉じられたら、isAdClosedがtrueになるからそれをあらかじめ購読しておいて、trueの通知が来たら、広告が閉じられたときに
+行いたい処理を呼び出すようにする
+
+あと、LoadAdがStartでよびだされてるのでLoadされるまえにShowAdしたらエラーになるから、await Task.Delay(1200)でタイミングずらしてから
+呼び出すといける（free_kickerのInitialControllerが特に実装の参考になると思う）
+
