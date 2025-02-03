@@ -2,6 +2,7 @@
 using UniRx;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 public class StageController : MonoBehaviour
 {
@@ -83,8 +84,10 @@ public class StageController : MonoBehaviour
         uiController.ShowClearText();
         //await uiController.FadeToBlackForOneSecond();
         //uiController.Retry();
+        string sceneName = SceneManager.GetActiveScene().name;
+        SaveLoadManager.SaveLastStage(sceneName);
         await Task.Delay(1200);
 
-        SceneListUtility.LoadNextStage();
+        SceneListUtility.LoadNextStage(sceneName);
     }
 }

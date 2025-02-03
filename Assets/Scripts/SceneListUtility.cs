@@ -62,10 +62,9 @@ public static class SceneListUtility
     /// 数字部分を＋１したシーンをロードします。
     /// 例: "Stage3" なら "Stage4" をロードする。
     /// </summary>
-    public static void LoadNextStage()
+    public static void LoadNextStage(string currentSceneName)
     {
         // 現在のシーン名を取得
-        string currentSceneName = SceneManager.GetActiveScene().name;
         string prefix = "Stage";
 
         // シーン名が "Stage" で始まっているかチェック
@@ -91,7 +90,8 @@ public static class SceneListUtility
         }
         else
         {
-            Debug.LogError("現在のシーン名は 'Stage' で始まっていません: " + currentSceneName);
+            Debug.LogError("現在のシーン名は 'Stage' で始まっていませんのでチュートリアルシーンと判断しました: " + currentSceneName);
+            SceneManager.LoadScene(prefix + "1");
         }
     }
 
