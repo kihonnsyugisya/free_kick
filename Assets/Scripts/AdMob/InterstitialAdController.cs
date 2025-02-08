@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using GoogleMobileAds.Api;
 using UniRx;
@@ -11,11 +11,6 @@ namespace GoogleMobileAds.Sample
     [AddComponentMenu("GoogleMobileAds/Samples/InterstitialAdController")]
     public class InterstitialAdController : AdmobUnitBase
     {
-        /// <summary>
-        /// 広告が表示可能な状態になるときにアクティブ化されるUI要素です。
-        /// </summary>
-        //public GameObject AdLoadedStatus;
-
         private InterstitialAd _interstitialAd;
 
         public BoolReactiveProperty isReady = new();
@@ -91,8 +86,6 @@ namespace GoogleMobileAds.Sample
                 RegisterEventHandlers(ad);
 
                 isReady.Value = true;
-                // UIに広告が読み込まれたことを通知します。
-                //AdLoadedStatus?.SetActive(true);
             });
         }
 
@@ -101,20 +94,23 @@ namespace GoogleMobileAds.Sample
         /// </summary>
         public void ShowAd()
         {
-            if (_interstitialAd != null && _interstitialAd.CanShowAd())
-            {
-                Debug.Log("インタースティシャル広告を表示しています。");
-                _interstitialAd.Show();
-            }
-            else
-            {
-                Debug.LogError("インタースティシャル広告はまだ準備ができていません。");
-                Debug.LogError("InterStitial Ad Ha Mada Junbigadekiteimasei");
+            Debug.Log("インタースティシャル広告を表示しています。");
+            _interstitialAd.Show();            
+        }
 
+        /// <summary>
+        /// 広告を表示できるか判定（よくわからんがとりあえずメソッド追加）
+        /// trueの場合広告表示可能
+        /// </summary>
+        public bool CheckShowAd()
+        {
+            if (_interstitialAd != null && _interstitialAd.CanShowAd() && !isSkipAd)
+            {
+                return true;
             }
-
-            // UIに広告が準備できていないことを通知します。
-            //AdLoadedStatus?.SetActive(false);
+            Debug.LogError("インタースティシャル広告はまだ準備ができていません。");
+            Debug.LogError("InterStitial Ad Ha Mada Junbigadekiteimasei");
+            return false;
         }
 
         /// <summary>
@@ -128,9 +124,6 @@ namespace GoogleMobileAds.Sample
                 _interstitialAd.Destroy();
                 _interstitialAd = null;
             }
-
-            // UIに広告が準備できていないことを通知します。
-            //AdLoadedStatus?.SetActive(false);
         }
 
         /// <summary>
@@ -141,7 +134,7 @@ namespace GoogleMobileAds.Sample
             if (_interstitialAd != null)
             {
                 var responseInfo = _interstitialAd.GetResponseInfo();
-                UnityEngine.Debug.Log(responseInfo);
+                Debug.Log(responseInfo);
             }
         }
 
