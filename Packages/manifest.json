@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.coffee.unmask": "https://github.com/mob-sakai/UnmaskForUGUI.git",
     "com.google.ads.mobile": "9.5.0",
     "com.google.play.review": "1.8.3",
     "com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",

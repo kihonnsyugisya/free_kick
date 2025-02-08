@@ -270,6 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   adUnitIdSetting: {fileID: 11400000, guid: d1a05cc6c23104ad795a862dc0fdd9cc, type: 2}
+  showAtTop: 1
 --- !u!1001 &2030937972
 PrefabInstance:
   m_ObjectHideFlags: 0
