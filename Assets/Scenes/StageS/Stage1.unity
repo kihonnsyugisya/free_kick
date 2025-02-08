@@ -290,6 +290,46 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3895413688465570178, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3895413688465570178, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3895413688465570178, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3895413688465570178, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114913243894415250, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114913243894415250, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114913243894415250, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 189.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114913243894415250, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114913243894415250, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 492
+      objectReference: {fileID: 0}
+    - target: {fileID: 4114913243894415250, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -60
+      objectReference: {fileID: 0}
     - target: {fileID: 4370334625256780929, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
       propertyPath: m_Material
       value: 
