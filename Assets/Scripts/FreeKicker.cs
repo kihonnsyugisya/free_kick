@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -108,5 +109,12 @@ public class FreeKicker : MonoBehaviour
         Vector3 direction = transform.forward;
         direction.y = kickDirection.y;
         kickDirection = direction;
+    }
+
+    public async void Replay()
+    {
+        Retry();
+        await Task.Delay(1200);
+        KickBall();
     }
 }

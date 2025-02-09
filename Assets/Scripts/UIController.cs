@@ -19,8 +19,9 @@ public class UIController : MonoBehaviour
 {
     // ---- UI要素 -------------------------
     [Header("UI要素 ---------------------------------------")]
-    [SerializeField] private Button retryButton;
+    public Button retryButton;
     public Button kickButton;
+    public Button NextButtonAlpa; // リプレイ中に表示される透明なスキップボタン
     [SerializeField] private SliderController powerSlider;
     [SerializeField] private Slider yAxisSlider;
     [SerializeField] private CanvasGroup stageTexts;
@@ -28,6 +29,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private CanvasGroup clearText;
     [SerializeField] private CanvasGroup darkScreen; // 画面暗転用CanvasGroup
     [SerializeField] private GameObject controllUIs;
+    [SerializeField] private GameObject replayText;
 
     // ---- ゲームコントローラー要素 -------------------------
     [Header("ゲームコントローラー要素 ------------------------")]
@@ -35,22 +37,19 @@ public class UIController : MonoBehaviour
     [SerializeField] private Transform startPos;
     public FreeKicker freeKicker;
     [SerializeField] private SoccerBall soccerBall;  // サッカーボールの Rigidbody
-    [SerializeField] private CameraSwitcher cameraSwitcher;
+    public CameraSwitcher cameraSwitcher;
 
     void Start()
     {
         freeKicker.ball = ball.transform;
         darkScreen.alpha = 0f; // 初期状態で透明に設定
+        darkScreen.gameObject.SetActive(true);
 
         ShowStageText(SceneManager.GetActiveScene().name);
 
         yAxisSlider.OnValueChangedAsObservable().Subscribe(value => {
             freeKicker.kickDirection.y = value;
         }).AddTo(this);
-
-        retryButton.onClick.AddListener(() => {
-            Retry();
-        });
 
         kickButton.onClick.AddListener(() => {
             powerSlider.StopSlider();
@@ -73,7 +72,8 @@ public class UIController : MonoBehaviour
         ResetBall();
         freeKicker.Retry();
         powerSlider.Retry();
-        cameraSwitcher.SwitchToKickerCamera();
+        cameraSwitcher.SwitchCamera(CameraSwitcher.CameraType.Kicker);
+        ShowRetryButton(false);
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ public class UIController : MonoBehaviour
     private void Shoot()
     {
         soccerBall.GetComponent<Rigidbody>().AddForce(freeKicker.kickDirection.normalized * freeKicker.kickForce, ForceMode.Impulse);
-        cameraSwitcher.SwitchToBallCamera();
+        cameraSwitcher.SwitchCamera(CameraSwitcher.CameraType.Ball);
     }
 
     private void ResetBall()
@@ -152,5 +152,20 @@ public class UIController : MonoBehaviour
     {
         canvasGroup.alpha = 0f;
         canvasGroup.DOFade(1, 1f);
+    }
+
+    public void ShowRetryButton(bool isShow)
+    { 
+        retryButton.gameObject.SetActive(isShow);
+    }
+
+    public void PlayReplay()
+    { 
+        replayText.SetActive(true);
+        foreach (Transform ui in controllUIs.transform)
+        {
+            ui.gameObject.SetActive(false);
+        }
+        clearText.gameObject.SetActive(false);
     }
 }
