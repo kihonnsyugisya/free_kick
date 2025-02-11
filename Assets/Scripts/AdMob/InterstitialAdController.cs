@@ -99,19 +99,31 @@ namespace GoogleMobileAds.Sample
         }
 
         /// <summary>
-        /// 広告を表示できるか判定（よくわからんがとりあえずメソッド追加）
-        /// trueの場合広告表示可能
+        /// 広告を表示できるか判定
+        /// true の場合、広告表示可能
         /// </summary>
         public bool CheckShowAd()
         {
-            if (_interstitialAd != null && _interstitialAd.CanShowAd() && !isSkipAd)
+            bool isAdAvailable = _interstitialAd != null;
+            bool canShowAd = isAdAvailable && _interstitialAd.CanShowAd();
+            bool isAdSkipped = isSkipAd;
+
+            Debug.Log($"[CheckShowAd] isAdAvailable: {_interstitialAd != null}, " +
+                      $"canShowAd: {_interstitialAd?.CanShowAd()}, " +
+                      $"isAdSkipped: {isSkipAd}, " +
+                      $"isReady: {isReady.Value}");
+
+
+            if (canShowAd && !isAdSkipped)
             {
                 return true;
             }
+
             Debug.LogError("インタースティシャル広告はまだ準備ができていません。");
             Debug.LogError("InterStitial Ad Ha Mada Junbigadekiteimasei");
             return false;
         }
+
 
         /// <summary>
         /// 広告を破棄します。
