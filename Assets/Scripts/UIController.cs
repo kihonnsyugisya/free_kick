@@ -39,11 +39,14 @@ public class UIController : MonoBehaviour
     [SerializeField] private SoccerBall soccerBall;  // サッカーボールの Rigidbody
     public CameraSwitcher cameraSwitcher;
 
+    private void Awake()
+    {
+        UiInit();
+    }
+
     void Start()
     {
         freeKicker.ball = ball.transform;
-        darkScreen.alpha = 0f; // 初期状態で透明に設定
-        darkScreen.gameObject.SetActive(true);
 
         ShowStageText(SceneManager.GetActiveScene().name);
 
@@ -62,12 +65,30 @@ public class UIController : MonoBehaviour
         }).AddTo(this);
 
         freeKicker.hasKicked.Skip(1).Subscribe(value => {
-            ShowControllUis(!value);
+            if(value) ShowControllUis(!value);
         }).AddTo(this);
+    }
+
+    /// <summary>
+    /// UnityEditorでプレイした後になぜかUIが非表示になったじょうたいになるから初期化するようにした
+    /// </summary>
+    private void UiInit()
+    {
+        clearText.alpha = 0f;
+        darkScreen.alpha = 0f;
+        darkScreen.gameObject.SetActive(true);
+
+        foreach (Transform ui in controllUIs.transform)
+        {
+            ui.gameObject.SetActive(true);
+        }
+        powerSlider.Retry();
+        retryButton.gameObject.SetActive(false);
     }
 
     public void Retry()
     {
+        ShowControllUis(true);
         clearText.alpha = 0f;
         ResetBall();
         freeKicker.Retry();
@@ -87,10 +108,13 @@ public class UIController : MonoBehaviour
 
     private void ResetBall()
     {
-        soccerBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-        soccerBall.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-        ball.transform.position = startPos.position;
+        Rigidbody rb = soccerBall.GetComponent<Rigidbody>();
+        rb.angularVelocity = Vector3.zero; // 角速度をリセット
+        rb.linearVelocity = Vector3.zero;        // 速度をリセット
+        rb.rotation = Quaternion.identity; // 回転をリセット
+        soccerBall.transform.position = startPos.position; // 位置をリセット
     }
+
 
     public void ShowClearText()
     {

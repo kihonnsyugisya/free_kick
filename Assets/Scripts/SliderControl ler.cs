@@ -1,48 +1,49 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using UniRx;
 
 public class SliderController : MonoBehaviour
 {
-    public Slider powerSlider;  // ƒXƒ‰ƒCƒ_[
-    [SerializeField] private Slider arrowSlider;  // ‘O‰ñ‚ÌˆÊ’u‚ğ¦‚·ƒXƒ‰ƒCƒ_[
-    [SerializeField] private Button stopButton;   // ƒXƒgƒbƒvƒ{ƒ^ƒ“
+    public Slider powerSlider;  // ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼
+    [SerializeField] private Slider arrowSlider;  // å‰å›ã®ä½ç½®ã‚’ç¤ºã™ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼
+    [SerializeField] private Button stopButton;   // ã‚¹ãƒˆãƒƒãƒ—ãƒœã‚¿ãƒ³
 
-    [SerializeField] private float minValue = 0f;  // ƒXƒ‰ƒCƒ_[‚ÌÅ¬’l
-    [SerializeField] private float maxValue = 50f; // ƒXƒ‰ƒCƒ_[‚ÌÅ‘å’l
-    [SerializeField] private float speed = 5f;     // ƒXƒ‰ƒCƒ_[‚Ì“®‚«‚Ì‘¬‚³
+    [SerializeField] private float minValue = 0f;  // ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ã®æœ€å°å€¤
+    [SerializeField] private float maxValue = 50f; // ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ã®æœ€å¤§å€¤
+    [SerializeField] private float speed = 5f;     // ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ã®å‹•ãã®é€Ÿã•
 
     [HideInInspector] public bool isMoving = true;
 
     void Start()
     {
-        // ƒXƒ‰ƒCƒ_[‚Ì‰Šúİ’è
+        // ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ã®åˆæœŸè¨­å®š
         powerSlider.minValue = minValue;
         powerSlider.maxValue = maxValue;
         arrowSlider.minValue = minValue;
         arrowSlider.maxValue = maxValue;
+        arrowSlider.gameObject.SetActive(false);
 
-        // ƒXƒ‰ƒCƒ_[‚Ì‰•œ“®ìiRx‚ğg—p‚µ‚ÄƒŠƒAƒNƒeƒBƒu‚É“®‚©‚·j
+        // ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ã®å¾€å¾©å‹•ä½œï¼ˆRxã‚’ä½¿ç”¨ã—ã¦ãƒªã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«å‹•ã‹ã™ï¼‰
         Observable.EveryUpdate()
             .Where(_ => isMoving)
             .Subscribe(_ => MoveSlider())
             .AddTo(this);
     }
 
-    // ƒXƒ‰ƒCƒ_[‚ğ¶‰E‚É‰•œ‚³‚¹‚é
+    // ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’å·¦å³ã«å¾€å¾©ã•ã›ã‚‹
     private void MoveSlider()
     {
-        // ƒXƒ‰ƒCƒ_[‚Ì’l‚ğŒ»İˆÊ’u‚ÉŠî‚Ã‚¢‚Ä•ÏX
+        // ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ã®å€¤ã‚’ç¾åœ¨ä½ç½®ã«åŸºã¥ã„ã¦å¤‰æ›´
         powerSlider.value = Mathf.PingPong(Time.time * speed, maxValue - minValue) + minValue;
     }
 
-    // ƒXƒ‰ƒCƒ_[‚ğƒXƒgƒbƒv‚µAŒ»İ‚Ì’l‚ğ•\¦
+    // ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’ã‚¹ãƒˆãƒƒãƒ—ã—ã€ç¾åœ¨ã®å€¤ã‚’è¡¨ç¤º
     public void StopSlider()
     {
-        isMoving = false; // ƒXƒ‰ƒCƒ_[‚ğ’â~
+        isMoving = false; // ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ã‚’åœæ­¢
         arrowSlider.gameObject.SetActive(true);
         arrowSlider.value = powerSlider.value;
-        Debug.Log("ˆĞ—Í: " + powerSlider.value); // Œ»İ‚ÌƒXƒ‰ƒCƒ_[‚Ì’l‚ğ•\¦
+        Debug.Log("å¨åŠ›: " + powerSlider.value); // ç¾åœ¨ã®ã‚¹ãƒ©ã‚¤ãƒ€ãƒ¼ã®å€¤ã‚’è¡¨ç¤º
     }
 
     public void Retry()

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UniRx;
 using Unity.Cinemachine;
+using System.Threading.Tasks;
 
 public class CameraSwitcher : MonoBehaviour
 {

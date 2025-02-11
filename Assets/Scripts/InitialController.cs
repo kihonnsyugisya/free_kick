@@ -51,7 +51,7 @@ public class InitialController : MonoBehaviour
         loadingText.DOFade(0, blinkDuration).SetLoops(-1, LoopType.Yoyo);
 
         // AdMobのインタースティシャル広告を表示
-        if (!interstitialAdController.isSkipAd)
+        if (interstitialAdController.CheckShowAd())
         {
             await Task.Delay(1200);
             interstitialAdController.ShowAd();

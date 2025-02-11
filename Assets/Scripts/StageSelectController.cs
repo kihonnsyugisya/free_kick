@@ -1,32 +1,47 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StageSelectController : MonoBehaviour
 {
-    [SerializeField] private StageSelectButton stageSelectButtonPrefab; // ƒ{ƒ^ƒ“‚ÌƒvƒŒƒnƒuiTextƒRƒ“ƒ|[ƒlƒ“ƒg‚ª•t‚¢‚Ä‚¢‚é‘O’ñj
-    [SerializeField] private Transform buttonParent;     // ƒ{ƒ^ƒ“‚ğ”z’u‚·‚éeTransformi—áFScrollView‚ÌContentj
-
-    public static StageSelectController Instance { get; private set; }
+    [SerializeField] private StageSelectButton stageSelectButtonPrefab; // ãƒœã‚¿ãƒ³ã®ãƒ—ãƒ¬ãƒãƒ–
+    [SerializeField] private Transform buttonParent; // ãƒœã‚¿ãƒ³ã‚’é…ç½®ã™ã‚‹è¦ªTransform
+    [SerializeField] private Color lockedColor = Color.gray; // æœªã‚¯ãƒªã‚¢ã®ã‚¹ãƒ†ãƒ¼ã‚¸ã®è‰²
 
     private void Start()
     {
-        // "Stage" + ”š ‚ÌƒV[ƒ“–¼ƒŠƒXƒg‚ğæ“¾
         List<string> stageSceneNames = SceneListUtility.GetStageSceneNamesInBuildSettings();
+        string lastClearedStage = SaveLoadManager.LoadLastStage();
+        int lastClearedStageNumber = GetStageNumber(lastClearedStage);
 
-        // ŠeƒV[ƒ“–¼‚É‘Î‚µ‚Äƒ{ƒ^ƒ“‚ğ¶¬‚µAƒNƒŠƒbƒN‚ÉƒV[ƒ“‚ğƒ[ƒh‚·‚éˆ—‚ğ“o˜^
         foreach (string sceneName in stageSceneNames)
         {
             StageSelectButton stageSelectButton = Instantiate(stageSelectButtonPrefab, buttonParent);
-
-            // ƒ{ƒ^ƒ“‚ÌƒeƒLƒXƒg‚ğƒV[ƒ“–¼‚Éİ’è
             stageSelectButton.buttonLabel.text = sceneName;
 
-            // ƒNƒŠƒbƒN‚ÉŠY“–ƒV[ƒ“‚ğƒ[ƒh‚·‚éˆ—‚ğ’Ç‰Á
-            stageSelectButton.button.onClick.AddListener(() => {
-                SceneManager.LoadScene(sceneName);
-            });
+            // ã‚¹ãƒ†ãƒ¼ã‚¸ç•ªå·ã‚’å–å¾—ã—ã€ã‚¯ãƒªã‚¢æ¸ˆã¿ã‚¹ãƒ†ãƒ¼ã‚¸ã¨æ¯”è¼ƒ
+            int stageNumber = GetStageNumber(sceneName);
+            bool isUnlocked = stageNumber <= lastClearedStageNumber;
+
+            stageSelectButton.button.interactable = isUnlocked;
+
+            if (isUnlocked)
+            {
+                stageSelectButton.button.onClick.AddListener(() => SceneManager.LoadScene(sceneName));
+            }
         }
+    }
+
+    /// <summary>
+    /// "Stage3" â†’ 3 ã®ã‚ˆã†ã«æ•°å€¤éƒ¨åˆ†ã‚’å–å¾—ã™ã‚‹
+    /// æ•°å€¤ãŒãªã„å ´åˆã¯ 0 ã‚’è¿”ã™
+    /// </summary>
+    private int GetStageNumber(string stageName)
+    {
+        if (string.IsNullOrEmpty(stageName)) return 0;
+
+        string numberPart = System.Text.RegularExpressions.Regex.Match(stageName, @"\d+").Value;
+        return int.TryParse(numberPart, out int number) ? number : 0;
     }
 }
