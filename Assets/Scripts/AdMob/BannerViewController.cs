@@ -40,20 +40,24 @@ namespace GoogleMobileAds.Sample
 
             _bannerView = new BannerView(_adUnitId, adSize, adPosition);
             ListenToAdEvents();
-            Debug.Log("バナー広告ビューが作成されました。");
+            Debug.LogWarning("バナー広告ビューが作成されました。");
         }
 
         public void LoadAd()
         {
-            if (_bannerView == null)
+            if (_bannerView == null)  // バナーが未作成の場合のみ作成
             {
                 CreateBannerView();
             }
 
-            var adRequest = new AdRequest();
-            Debug.Log("バナー広告を読み込んでいます。");
-            _bannerView.LoadAd(adRequest);
+            if (_bannerView != null)  // ここを追加して、念のためチェック
+            {
+                var adRequest = new AdRequest();
+                Debug.Log("バナー広告を読み込んでいます。");
+                _bannerView.LoadAd(adRequest);
+            }
         }
+
 
         public void ShowAd()
         {

@@ -13,7 +13,7 @@ public class StageSelectController : MonoBehaviour
     {
         List<string> stageSceneNames = SceneListUtility.GetStageSceneNamesInBuildSettings();
         string lastClearedStage = SaveLoadManager.LoadLastStage();
-        int lastClearedStageNumber = GetStageNumber(lastClearedStage);
+        int lastClearedStageNumber = SceneListUtility.GetStageNumber(lastClearedStage);
 
         foreach (string sceneName in stageSceneNames)
         {
@@ -21,7 +21,7 @@ public class StageSelectController : MonoBehaviour
             stageSelectButton.buttonLabel.text = sceneName;
 
             // ステージ番号を取得し、クリア済みステージと比較
-            int stageNumber = GetStageNumber(sceneName);
+            int stageNumber = SceneListUtility.GetStageNumber(sceneName);
             bool isUnlocked = stageNumber <= lastClearedStageNumber;
 
             stageSelectButton.button.interactable = isUnlocked;
@@ -33,15 +33,4 @@ public class StageSelectController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// "Stage3" → 3 のように数値部分を取得する
-    /// 数値がない場合は 0 を返す
-    /// </summary>
-    private int GetStageNumber(string stageName)
-    {
-        if (string.IsNullOrEmpty(stageName)) return 0;
-
-        string numberPart = System.Text.RegularExpressions.Regex.Match(stageName, @"\d+").Value;
-        return int.TryParse(numberPart, out int number) ? number : 0;
-    }
 }

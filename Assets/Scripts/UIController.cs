@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DG.Tweening.Core.Easing;
 using UnityEngine.SceneManagement;
+using GoogleMobileAds.Sample;
 
 /// <summary>
 /// ボールの挙動を制御するUIコントローラー
@@ -22,14 +23,17 @@ public class UIController : MonoBehaviour
     public Button retryButton;
     public Button kickButton;
     public Button NextButtonAlpa; // リプレイ中に表示される透明なスキップボタン
-    [SerializeField] private SliderController powerSlider;
+    public ClearTextEffect clearTextEffect;
+    public LifeManager lifeManager;
+    public SliderController powerSlider;
     [SerializeField] private Slider yAxisSlider;
     [SerializeField] private CanvasGroup stageTexts;
     [SerializeField] private TextMeshProUGUI stageNum;
-    [SerializeField] private CanvasGroup clearText;
     [SerializeField] private CanvasGroup darkScreen; // 画面暗転用CanvasGroup
+    [SerializeField] private GameObject irisCanvas;
     [SerializeField] private GameObject controllUIs;
     [SerializeField] private GameObject replayText;
+    [SerializeField] private BannerViewController bannerViewController;
 
     // ---- ゲームコントローラー要素 -------------------------
     [Header("ゲームコントローラー要素 ------------------------")]
@@ -48,7 +52,8 @@ public class UIController : MonoBehaviour
     {
         freeKicker.ball = ball.transform;
 
-        ShowStageText(SceneManager.GetActiveScene().name);
+        var stageName = SceneManager.GetActiveScene().name;
+        ShowStageText(SceneListUtility.GetBaseStageName(stageName));
 
         yAxisSlider.OnValueChangedAsObservable().Subscribe(value => {
             freeKicker.kickDirection.y = value;
@@ -74,9 +79,9 @@ public class UIController : MonoBehaviour
     /// </summary>
     private void UiInit()
     {
-        clearText.alpha = 0f;
         darkScreen.alpha = 0f;
         darkScreen.gameObject.SetActive(true);
+        //irisCanvas.SetActive(true); アイリスインやろうとしたがあきらめた
 
         foreach (Transform ui in controllUIs.transform)
         {
@@ -89,7 +94,6 @@ public class UIController : MonoBehaviour
     public void Retry()
     {
         ShowControllUis(true);
-        clearText.alpha = 0f;
         ResetBall();
         freeKicker.Retry();
         powerSlider.Retry();
@@ -109,20 +113,30 @@ public class UIController : MonoBehaviour
     private void ResetBall()
     {
         Rigidbody rb = soccerBall.GetComponent<Rigidbody>();
-        rb.angularVelocity = Vector3.zero; // 角速度をリセット
-        rb.linearVelocity = Vector3.zero;        // 速度をリセット
-        rb.rotation = Quaternion.identity; // 回転をリセット
-        soccerBall.transform.position = startPos.position; // 位置をリセット
+
+        rb.isKinematic = true; // 物理シミュレーションを停止
+        rb.linearVelocity = Vector3.zero;
+        rb.MovePosition(startPos.position);
+        rb.MoveRotation(Quaternion.identity);
+        Physics.SyncTransforms(); // 物理エンジンに強制的に反映
+        rb.isKinematic = false; // 物理シミュレーションを再開
     }
 
 
-    public void ShowClearText()
+
+    public async Task ShowClearText()
     {
-        FadeIn(clearText);
+        //FadeIn(clearText);
         foreach (Transform ui in controllUIs.transform)
         {
             ui.gameObject.SetActive(false);
         }
+        await clearTextEffect.ShowClearText("CLEAR");
+    }
+
+    public async Task ShowStageClearText()
+    {
+        await clearTextEffect.ShowClearTextWithBounce("ステージクリア");
     }
 
     private void ShowStageText(string stageName)
@@ -142,18 +156,24 @@ public class UIController : MonoBehaviour
 
     public async Task FadeToBlackForOneSecond()
     {
+        bannerViewController.HideAd();
         // フェードイン（暗転開始）
         FadeIn(darkScreen);
+        //irisCanvas.SetActive(false);
 
         // フェードイン完了後、暗転状態を維持する時間 (0.7秒 + 1.0秒)
         await Task.Delay(1700);
 
         // フェードアウト（暗転解除）
+        //irisCanvas.SetActive(true);
         FadeOut(darkScreen);
+
+        bannerViewController.ShowAd();
     }
 
     public async Task ShowStageText(GameObject stageText)
     {
+        bannerViewController.HideAd();
         // フェードイン（暗転開始）
         FadeIn(darkScreen);
 
@@ -162,6 +182,7 @@ public class UIController : MonoBehaviour
 
         // フェードアウト（暗転解除）
         FadeOut(darkScreen);
+        bannerViewController.ShowAd();
     }
 
     // フェードアウト処理
@@ -190,6 +211,9 @@ public class UIController : MonoBehaviour
         {
             ui.gameObject.SetActive(false);
         }
-        clearText.gameObject.SetActive(false);
+        //clearText.gameObject.SetActive(false);
+        clearTextEffect.gameObject.SetActive(false);
+
+        ResetBall();
     }
 }

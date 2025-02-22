@@ -19,6 +19,11 @@ public class StageController : MonoBehaviour
     [Tooltip("ゲーム内のサッカーボールオブジェクト")]
     [SerializeField] private SoccerBall soccerBall;
 
+    [Tooltip("リプレイを再現する必要があるオブジェクト（ないなら nullでよい）")]
+    [SerializeField] private ReplayableObject replayableObject;
+
+    [SerializeField] private LifeManager lifeManager;
+
     private CompositeDisposable retrySubscription = new CompositeDisposable(); // リトライ処理の購読管理
     private bool isReplay = false;
 
@@ -49,12 +54,17 @@ public class StageController : MonoBehaviour
             RetryStage();
         });
 
-        uiController.NextButtonAlpa.onClick.AddListener(() =>
+        uiController.NextButtonAlpa.onClick.AddListener(async () =>
         {
             retrySubscription.Clear();
             isReplay = false;
             string sceneName = SceneManager.GetActiveScene().name;
             SaveLoadManager.SaveLastStage(sceneName);
+            if (SceneListUtility.IsBossStage(sceneName))
+            {
+                await uiController.ShowStageClearText();
+                await Task.Delay(600);
+            }
             SceneListUtility.LoadNextStage(sceneName);
         });
 
@@ -108,6 +118,12 @@ public class StageController : MonoBehaviour
     /// </summary>
     private async void RetryStage()
     {
+        
+        if (lifeManager.ReduceLife() == 0)
+        {
+
+            return;
+        }
         uiController.ShowRetryButton(false); // リトライ時に非表示
         await uiController.FadeToBlackForOneSecond();
         uiController.Retry();
@@ -123,21 +139,30 @@ public class StageController : MonoBehaviour
             isReplay = false;
             string sceneName = SceneManager.GetActiveScene().name;
             SaveLoadManager.SaveLastStage(sceneName);
+            if (replayableObject != null) Destroy(replayableObject.gameObject);
             await Task.Delay(1200);
 
+            if (SceneListUtility.IsBossStage(sceneName)) {
+                await uiController.ShowStageClearText();
+                await Task.Delay(1000);
+            }
+
             SceneListUtility.LoadNextStage(sceneName);
+            return;
         }
-        isReplay = true;
+        isReplay = true;    
         // クリア時にリトライタイマーをキャンセル
         retrySubscription.Clear();
 
         uiController.ShowRetryButton(false); // クリア時に非表示
-        uiController.ShowClearText();
+        await uiController.ShowClearText();
 
         uiController.cameraSwitcher.SwitchCamera(CameraSwitcher.CameraType.Replay1);
         await Task.Delay(1300);
+        if (replayableObject != null) replayableObject.Replay();
         uiController.PlayReplay();
-
         uiController.freeKicker.Replay();
     }
 }
+
+

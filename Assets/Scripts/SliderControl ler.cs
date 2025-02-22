@@ -57,4 +57,9 @@ public class SliderController : MonoBehaviour
         arrowSlider.gameObject.SetActive(false);
         isMoving = true;
     }
+
+    public void hideArrowSlider()
+    { 
+        arrowSlider.gameObject.SetActive(false);
+    }
 }

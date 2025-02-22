@@ -20,14 +20,14 @@ public class Keeper : MonoBehaviour
 
     public enum StageMode
     {
-        Stage4
+        Stage5
     }
 
     [SerializeField] private StageMode currentMode;
 
     private readonly Dictionary<StageMode, Mode> stageToModeMap = new()
     {
-        { StageMode.Stage4, Mode.SittingToYokone }
+        { StageMode.Stage5, Mode.SittingToYokone }
     };
 
     void Start()
@@ -52,6 +52,7 @@ public class Keeper : MonoBehaviour
         cameraSwitcher.SwitchCamera(CameraSwitcher.CameraType.Kicker);
         await Task.Delay(1000);
         uIController.ShowControllUis(true);
+        uIController.powerSlider.hideArrowSlider();
         uIController.ShowRetryButton(false);
     }
 }

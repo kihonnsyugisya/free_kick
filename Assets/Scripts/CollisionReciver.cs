@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UniRx;
 using UnityEngine;
 
@@ -9,19 +9,21 @@ public class CollisionReciver : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // �{�[���ɐG�ꂽ�ꍇ
+        if (other.transform.IsChildOf(transform)) return;
+        // ボールに触れた場合
         if (other.CompareTag("Ball"))
         {
-            onBallHit.OnNext(Unit.Default); // �ʒm�𔭍s
+            onBallHit.OnNext(Unit.Default); // 通知を発行
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        // �{�[���ɐG�ꂽ�ꍇ
+        if(collision.transform.IsChildOf(transform)) return ;
+        // ボールに触れた場合
         if (collision.gameObject.CompareTag("Ball"))
         {
-            onBallHit.OnNext(Unit.Default); // �ʒm�𔭍s
+            onBallHit.OnNext(Unit.Default); // 通知を発行
         }
     }
 }

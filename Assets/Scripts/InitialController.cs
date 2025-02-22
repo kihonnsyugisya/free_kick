@@ -50,10 +50,11 @@ public class InitialController : MonoBehaviour
         // 「読み込み中」テキストを点滅させる（アルファ値を0～1の間で繰り返し変化させる）
         loadingText.DOFade(0, blinkDuration).SetLoops(-1, LoopType.Yoyo);
 
+        await Task.Delay(2000);
+
         // AdMobのインタースティシャル広告を表示
         if (interstitialAdController.CheckShowAd())
         {
-            await Task.Delay(1200);
             interstitialAdController.ShowAd();
             return;
         }

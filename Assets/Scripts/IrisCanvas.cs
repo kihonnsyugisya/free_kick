@@ -1,27 +1,43 @@
-﻿using System.Threading.Tasks;
-using DG.Tweening;
+﻿using DG.Tweening;
 using UnityEngine;
 
 public class IrisCanvas : MonoBehaviour
 {
     [SerializeField] RectTransform unmask;
-    readonly Vector2 IRIS_IN_SCALE = new Vector2(30, 30);
+    readonly Vector2 IRIS_IN_SCALE = new Vector2(80, 50);
     readonly float SCALE_DURATION = 1;
 
-    //public void IrisIn()
-    //{
-    //    unmask.DOScale(IRIS_IN_SCALE, SCALE_DURATION).SetEase(Ease.InCubic);
-    //}
+    /// <summary>
+    /// アイリスを開く（スケールを大きくする）
+    /// </summary>
+    private void IrisIn()
+    {
+        unmask.DOScale(IRIS_IN_SCALE, SCALE_DURATION)
+              .SetEase(Ease.InCubic);
+    }
 
-    //public void IrisOut()
-    //{
-    //    unmask.DOScale(new Vector3(0, 0, 0), SCALE_DURATION).SetEase(Ease.OutCubic);
-    //}
+    /// <summary>
+    /// アイリスを閉じる（スケールをゼロにする）
+    /// </summary>
+    private void IrisOut()
+    {
+        unmask.DOScale(Vector2.zero, SCALE_DURATION)
+              .SetEase(Ease.OutCubic);
+    }
 
-    //private async void Start()
-    //{
-    //    Debug.Log("DarkScreenはデフォルトでONにしといて。一時的にOFFにしてるだけ（開発しにくいから）");
+    /// <summary>
+    /// オブジェクトが有効化されたとき（SetActive(true)）にアイリスを開く
+    /// </summary>
+    private void OnEnable()
+    {
+        IrisIn();
+    }
 
-    //    IrisOut();
-    //}
+    /// <summary>
+    /// オブジェクトが無効化されたとき（SetActive(false)）にアイリスを閉じる
+    /// </summary>
+    private void OnDisable()
+    {
+        IrisOut();
+    }
 }

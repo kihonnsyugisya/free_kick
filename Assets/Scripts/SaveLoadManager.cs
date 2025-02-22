@@ -12,11 +12,8 @@ public static class SaveLoadManager
     /// 最後に到達したステージ名を保存します。
     /// ※例: "Stage3" を保存する
     /// </summary>
-    /// <param name="stageName">保存するステージ名</param>
-    public static void SaveLastStage(string stageName)
+    public static void SaveLastStage(string currentStage)
     {
-        // 現在のシーン名を取得
-        string currentStage = SceneManager.GetActiveScene().name;
         // PlayerPrefs に保存
         PlayerPrefs.SetString(LastStageKey, currentStage);
         PlayerPrefs.Save();

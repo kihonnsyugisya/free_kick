@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8916856534153455409}
   - component: {fileID: 6719927684894992208}
   - component: {fileID: 3244960492772654879}
-  - component: {fileID: 8909690685236374650}
   - component: {fileID: 7974711054813289662}
   - component: {fileID: 1105525458044050727}
   m_Layer: 0
@@ -92,33 +91,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &8909690685236374650
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 472189791186599638}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 2
 --- !u!65 &7974711054813289662
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -138,8 +110,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.7300001, y: 0.025707126, z: 0.32}
-  m_Center: {x: -0.000017697996, y: 0.1, z: -0.07}
+  m_Size: {x: 0.68, y: 0.01, z: 0.33}
+  m_Center: {x: -0.000017697996, y: 0.1, z: -0.06}
 --- !u!114 &1105525458044050727
 MonoBehaviour:
   m_ObjectHideFlags: 0
