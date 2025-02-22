@@ -68,7 +68,16 @@ public class StageController : MonoBehaviour
             SceneListUtility.LoadNextStage(sceneName);
         });
 
-        }
+        uiController.gameOverPanel.rewardedAdController.isAdClosed
+            .Skip(1) // 最初の通知（現在の値）を無視
+            .Subscribe(async _ => {
+                uiController.lifeManager.HealFullLife();
+                uiController.ShowGameOverPanel(false);
+                uiController.ShowRetryButton(false); // リトライ時に非表示
+                await uiController.FadeToBlackForOneSecond();
+                uiController.Retry();
+            });
+    }
 
     /// <summary>
     /// 一定時間後にリトライを実行する
@@ -121,7 +130,7 @@ public class StageController : MonoBehaviour
         
         if (lifeManager.ReduceLife() == 0)
         {
-
+            uiController.ShowGameOverPanel(true);
             return;
         }
         uiController.ShowRetryButton(false); // リトライ時に非表示

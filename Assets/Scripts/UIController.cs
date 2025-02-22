@@ -34,6 +34,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject controllUIs;
     [SerializeField] private GameObject replayText;
     [SerializeField] private BannerViewController bannerViewController;
+    public GameOverPanel gameOverPanel;
 
     // ---- ゲームコントローラー要素 -------------------------
     [Header("ゲームコントローラー要素 ------------------------")]
@@ -72,7 +73,22 @@ public class UIController : MonoBehaviour
         freeKicker.hasKicked.Skip(1).Subscribe(value => {
             if(value) ShowControllUis(!value);
         }).AddTo(this);
-    }
+
+        gameOverPanel.rewartButton.OnClickAsObservable()
+            .ThrottleFirst(TimeSpan.FromSeconds(1.5f)) // 指定時間内の連続クリックを無効化
+            .Subscribe(_ => {
+                gameOverPanel.rewardedAdController.ShowAd();
+            }).AddTo(this); // GameObjectが破棄されたら自動で解除
+
+         gameOverPanel.rewardedAdController.isReady.Subscribe(ready => gameOverPanel.rewartButton.interactable = ready).AddTo(this);
+
+        gameOverPanel.yametokuButton.onClick.AddListener(() =>
+        {
+            lifeManager.HealFullLife();
+            SceneManager.LoadScene("StageSelect");
+        });
+
+       }
 
     /// <summary>
     /// UnityEditorでプレイした後になぜかUIが非表示になったじょうたいになるから初期化するようにした
@@ -99,6 +115,20 @@ public class UIController : MonoBehaviour
         powerSlider.Retry();
         cameraSwitcher.SwitchCamera(CameraSwitcher.CameraType.Kicker);
         ShowRetryButton(false);
+    }
+
+    public void ShowGameOverPanel(bool isShow)
+    {
+        if (isShow)
+        {
+            bannerViewController.HideAd();
+            gameOverPanel.gameObject.SetActive(true);
+        }
+        else
+        {
+            gameOverPanel.gameObject.SetActive(false);
+            bannerViewController.ShowAd();
+        }
     }
 
     /// <summary>
@@ -216,4 +246,7 @@ public class UIController : MonoBehaviour
 
         ResetBall();
     }
+
+
+
 }

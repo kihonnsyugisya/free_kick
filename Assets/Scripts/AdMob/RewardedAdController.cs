@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using UnityEngine;
 using GoogleMobileAds.Api;
 using UniRx;
+using System.Threading.Tasks;
 
 namespace GoogleMobileAds.Sample
 {
@@ -141,6 +142,41 @@ namespace GoogleMobileAds.Sample
                 UnityEngine.Debug.Log(responseInfo);
             }
         }
+
+        private TaskCompletionSource<bool> _adCompletionSource;
+
+        public async Task ShowAdAndWait()
+        {
+            if (_rewardedAd == null || !_rewardedAd.CanShowAd())
+            {
+                Debug.LogError("リワード広告はまだ準備ができていません。");
+                return;
+            }
+
+            Debug.Log("リワード広告を表示しています。");
+
+            isAdClosed.Value = false;
+            _adCompletionSource = new TaskCompletionSource<bool>();
+
+            _rewardedAd.Show((Reward reward) =>
+            {
+                Debug.Log($"リワード広告完了: {reward.Amount} {reward.Type}");
+            });
+
+            await WaitForAdToClose();
+
+            Debug.Log("広告が閉じられたので処理終了。");
+        }
+
+        private async Task WaitForAdToClose()
+        {
+            while (!isAdClosed.Value)
+            {
+                await Task.Yield();
+            }
+        }
+
+
 
         private void RegisterEventHandlers(RewardedAd ad)
         {
