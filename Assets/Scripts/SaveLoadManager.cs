@@ -5,27 +5,45 @@ using UnityEngine.SceneManagement;
 /// セーブ・ロード処理をまとめたユーティリティクラス\n\n※Staticメソッドを使用して、ゲームデータの保存や読み込みを行います。\nPlayerPrefs を利用して、最後に到達したステージ名を保存します。\n</summary>
 public static class SaveLoadManager
 {
-    // セーブ・ロードに使用するキーを定義
-    private const string LastStageKey = "LastStage";
-
     /// <summary>
-    /// 最後に到達したステージ名を保存します。
-    /// ※例: "Stage3" を保存する
+    /// 最後に到達したpurefixを保存します。
     /// </summary>
-    public static void SaveLastStage(string currentStage)
+    public static void SaveStagePrefix(StagePrefix currentStagePrefix)
     {
         // PlayerPrefs に保存
-        PlayerPrefs.SetString(LastStageKey, currentStage);
+        PlayerPrefs.SetString(currentStagePrefix.ToString(), currentStagePrefix.ToString());
         PlayerPrefs.Save();
     }
 
     /// <summary>
     /// 最後に到達したステージ名を読み込みます。
-    /// キーが存在しない場合はデフォルトで \"TutorialScene\" を返します。
+    /// キーが存在しない場合はデフォルトで false を返します。
     /// </summary>
-    /// <returns>最後に保存されたステージ名</returns>
-    public static string LoadLastStage()
+    /// <returns>最後に保存されたステージ名が存在した場合はtrue、存在しない場合はfalse</returns>
+    public static bool LoadStagefPrefix(StagePrefix loadPrefix)
     {
-        return PlayerPrefs.GetString(LastStageKey, "TutorialScene");
+        string stage = PlayerPrefs.GetString(loadPrefix.ToString(), "");
+        return !string.IsNullOrEmpty(stage);
     }
+
+    /// <summary>
+    /// チュートリアルが完了したかどうかを保存します。
+    /// </summary>
+    public static void SaveTutorialCompleted(bool completed)
+    {
+        // PlayerPrefs に保存（true/false）
+        PlayerPrefs.SetInt("TutorialCompleted", completed ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    /// <summary>
+    /// チュートリアルが完了したかどうかを読み込みます。
+    /// </summary>
+    /// <returns>チュートリアルが完了していればtrue、完了していなければfalse</returns>
+    public static bool LoadTutorialCompleted()
+    {
+        // PlayerPrefs から取得（デフォルト値は 0, 完了していない場合は false）
+        return PlayerPrefs.GetInt("TutorialCompleted", 0) == 1;
+    }
+
 }

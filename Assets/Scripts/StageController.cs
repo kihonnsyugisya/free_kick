@@ -29,6 +29,8 @@ public class StageController : MonoBehaviour
 
     void Start()
     {
+
+        lifeManager.HealFullLife();
         foreach (var go in goalObjs)
         {
             go.OnBallHit
@@ -59,7 +61,6 @@ public class StageController : MonoBehaviour
             retrySubscription.Clear();
             isReplay = false;
             string sceneName = SceneManager.GetActiveScene().name;
-            SaveLoadManager.SaveLastStage(sceneName);
             if (SceneListUtility.IsBossStage(sceneName))
             {
                 await uiController.ShowStageClearText();
@@ -127,12 +128,13 @@ public class StageController : MonoBehaviour
     /// </summary>
     private async void RetryStage()
     {
-        
+
         if (lifeManager.ReduceLife() == 0)
         {
             uiController.ShowGameOverPanel(true);
             return;
         }
+
         uiController.ShowRetryButton(false); // リトライ時に非表示
         await uiController.FadeToBlackForOneSecond();
         uiController.Retry();
@@ -147,7 +149,7 @@ public class StageController : MonoBehaviour
         {
             isReplay = false;
             string sceneName = SceneManager.GetActiveScene().name;
-            SaveLoadManager.SaveLastStage(sceneName);
+            SaveStagePrefix(sceneName);
             if (replayableObject != null) Destroy(replayableObject.gameObject);
             await Task.Delay(1200);
 
@@ -171,6 +173,33 @@ public class StageController : MonoBehaviour
         if (replayableObject != null) replayableObject.Replay();
         uiController.PlayReplay();
         uiController.freeKicker.Replay();
+    }
+
+    /// <summary>
+    /// クリアしたステージのプレフィックスをセーブ
+    /// </summary>
+    /// <param name="sceneName"></param>
+    private void SaveStagePrefix(string sceneName)
+    {
+        string stagePrefix = SceneListUtility.GetStagePrefix(sceneName);
+        StagePrefix prefix = SceneListUtility.GetStagePrefixEnum(stagePrefix);
+        SaveLoadManager.SaveStagePrefix(GetNextPrefix(prefix));
+    }
+    private StagePrefix GetNextPrefix(StagePrefix currentPrefix)
+    {
+        // 現在の値から1を足した値が、次のPrefixとなる
+        StagePrefix nextPrefix = (StagePrefix)((int)currentPrefix + 1);
+
+        // 次の値が存在するかチェック (最大値を超えないか確認)
+        if (Enum.IsDefined(typeof(StagePrefix), nextPrefix))
+        {
+            return nextPrefix;
+        }
+        else
+        {
+            // 最大値に達していた場合は、最初の値（A）を返すなどの処理
+            return StagePrefix.A;
+        }
     }
 }
 

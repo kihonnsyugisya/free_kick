@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System;
 
 /// <summary>
 /// ビルド設定に登録されているシーンの中から、
@@ -10,7 +11,7 @@ using System.Text.RegularExpressions;
 /// </summary>
 public static class SceneListUtility
 {
-    private static readonly string prefix = "Stage";
+    private static readonly string Stage = "Stage";
 
     /// <summary>
     /// ビルド設定に登録されたシーンのうち、
@@ -27,7 +28,7 @@ public static class SceneListUtility
             string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
             string sceneName = Path.GetFileNameWithoutExtension(scenePath);
 
-            if (sceneName.StartsWith(prefix))
+            if (sceneName.StartsWith(Stage))
             {
                 int stageNumber = GetStageNumber(sceneName);
                 if (stageNumber > 0)
@@ -46,27 +47,6 @@ public static class SceneListUtility
         });
 
         return stageScenes;
-    }
-
-    /// <summary>
-    /// "Stage3" や "Stage3Hard" → 3 のように数値部分を取得する
-    /// 数値がない場合は 0 を返す
-    /// </summary>
-    public static int GetStageNumber(string stageName)
-    {
-        if (string.IsNullOrEmpty(stageName)) return 0;
-
-        var match = Regex.Match(stageName, @"\d+"); // 最初に見つかった数字を取得
-        return match.Success && int.TryParse(match.Value, out int number) ? number : 0;
-    }
-
-    /// <summary>
-    /// "Stage3Hard" → "Hard" のように数字以降の文字列を取得
-    /// </summary>
-    private static string GetStageSuffix(string stageName)
-    {
-        var match = Regex.Match(stageName, @"Stage\d+(.*)"); // "Stage3Hard" → "Hard"
-        return match.Success ? match.Groups[1].Value : "";
     }
 
     /// <summary>
@@ -90,7 +70,7 @@ public static class SceneListUtility
         }
 
         // シーン名が "Stage" で始まっているか確認
-        if (currentSceneName.StartsWith("Stage"))
+        if (currentSceneName.StartsWith(Stage))
         {
             int currentStageNumber = GetStageNumber(currentSceneName);
             string suffix = GetStageSuffix(currentSceneName); // 例: "Hard" の部分
@@ -98,7 +78,7 @@ public static class SceneListUtility
             if (currentStageNumber > 0)
             {
                 int nextStageNumber = currentStageNumber + 1;
-                string nextSceneName = "Stage" + nextStageNumber.ToString() + suffix;
+                string nextSceneName = Stage + nextStageNumber.ToString() + suffix;
 
                 // 次のステージがビルド設定にあるか確認
                 List<string> stageList = GetStageSceneNamesInBuildSettings();
@@ -118,9 +98,10 @@ public static class SceneListUtility
         }
         else
         {
-            // "Stage" で始まっていない場合、チュートリアル扱いとして "Stage1" に移動
+            // "Stage" で始まっていない場合、チュートリアル扱いとして "StageSelect" に移動
             Debug.LogError($"現在のシーン名は 'Stage' で始まっていません: {currentSceneName}");
-            SceneManager.LoadScene("Stage1");
+
+            SceneManager.LoadScene("StageSelect");
         }
     }
 
@@ -133,7 +114,7 @@ public static class SceneListUtility
     {
         const int BOSS_STAGE_NUMBER = 5; // ボスステージ番号
 
-        if (sceneName.StartsWith("Stage"))
+        if (sceneName.StartsWith(Stage))
         {
             int stageNumber = GetStageNumber(sceneName);
             return stageNumber == BOSS_STAGE_NUMBER;
@@ -151,5 +132,60 @@ public static class SceneListUtility
         var match = Regex.Match(stageName, @"^(Stage\d+)");
         return match.Success ? match.Groups[1].Value : "";
     }
+
+    /// <summary>
+    /// "Stage3" や "Stage3Hard" → 3 のように数値部分を取得する
+    /// 数値がない場合は 1 を返す
+    /// </summary>
+    public static int GetStageNumber(string stageName)
+    {
+        if (string.IsNullOrEmpty(stageName)) return 0;
+
+        var match = Regex.Match(stageName, @"\d+"); // 最初に見つかった数字を取得
+        return match.Success && int.TryParse(match.Value, out int number) ? number : 1;
+    }
+
+    /// <summary>
+    /// "Stage3Hard" → "Hard" のように数字以降の文字列を取得
+    /// </summary>
+    private static string GetStageSuffix(string stageName)
+    {
+        var match = Regex.Match(stageName, @"Stage\d+(.*)"); // "Stage3Hard" → "Hard"
+        return match.Success ? match.Groups[1].Value : "";
+    }
+
+    /// <summary>
+    /// シーン名が "Stage" + 数字 + 任意の英語文字列 の形式の場合、
+    /// 数字以降の英語部分（Prefix）を返します。
+    /// 例: "Stage3Hard" → "Hard"、"Stage2" → ""
+    /// </summary>
+    public static string GetStagePrefix(string stageName)
+    {
+        var match = Regex.Match(stageName, @"^Stage\d+(.*)");
+        return match.Groups[1].Value;
+    }
+
+    /// <summary>
+    /// ステージのプレフィックスを取得
+    /// </summary>
+    public static StagePrefix GetStagePrefixEnum(string stageName)
+    {
+        string prefixString = GetStagePrefix(stageName);
+
+        // 変換に失敗した場合は StagePrefix.None を返す
+        if (Enum.TryParse(prefixString, out StagePrefix parsedPrefix))
+        {
+            Debug.Log($"[プレフィックス解析] 取得したプレフィックス: {parsedPrefix}");
+            return parsedPrefix;
+        }
+        else
+        {
+            Debug.LogWarning($"[プレフィックス解析] 無効なプレフィックス: {prefixString}。デフォルト値Aを返します。");
+            return StagePrefix.A;  // 変更：無効なプレフィックスは StagePrefix.A を返す
+        }
+    }
+
+
+
 
 }

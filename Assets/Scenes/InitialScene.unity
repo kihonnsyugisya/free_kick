@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91353f317441b4e4eb3ee66f12963a7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isDataResetStart: 1
+  isDataResetStart: 0
   loadingCanvasGroup: {fileID: 129167935}
   loadingText: {fileID: 368701661}
   blinkDuration: 1.5

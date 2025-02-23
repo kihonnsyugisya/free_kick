@@ -63,45 +63,21 @@ public class InitialController : MonoBehaviour
     }
 
     /// <summary>
-    /// 広告が閉じられたときに呼ばれるコールバック。
-    /// PlayerPrefsから最後のステージ名を取得し、次のステージ名を計算してシーン遷移する。
+    /// 広告が閉じられたときに呼ばれるコールバックメソッド。
+    /// 最後に到達したステージを確認し、次に遷移するステージを決定してシーン遷移を行います。
     /// </summary>
     private void OnAdClosed()
     {
         // 点滅アニメーションを停止
         loadingText.DOKill();
 
-        // PlayerPrefsから最後のステージ名を取得（存在しなければ "Stage1" をデフォルトとする）
-        string lastStage = SaveLoadManager.LoadLastStage();
+        // プレイヤーが初めてプレイした場合は "TutorialScene"、それ以外は "StageSelect" に遷移
+        string nextStage = SaveLoadManager.LoadTutorialCompleted() ? "StageSelect" : "TutorialScene";
 
-        // 次のステージ名を計算
-        string nextStage = GetNextStageName(lastStage);
-
-        // ロード画面をフェードアウトさせ、完了後にシーン遷移する（0.5秒）
+        // ロード画面をフェードアウトさせ、完了後にシーン遷移する（0.5秒の遅延）
         loadingCanvasGroup.DOFade(0, 0.5f).OnComplete(() => {
             SceneManager.LoadScene(nextStage);
         });
     }
 
-    /// <summary>
-    /// 現在のステージ名から次のステージ名を計算する。
-    /// 例: "Stage3" → "Stage4"
-    /// </summary>
-    /// <param name="currentStage">現在のステージ名</param>
-    /// <returns>次のステージ名</returns>
-    private string GetNextStageName(string currentStage)
-    {
-        int number = 1;
-        if (currentStage.StartsWith("Stage"))
-        {
-            // "Stage" の文字数は5文字なので、5文字目以降を取得
-            string numberPart = currentStage.Substring(5);
-            if (int.TryParse(numberPart, out number))
-            {
-                number += 1;
-            }
-            return "Stage" + number.ToString();
-        }
-        return "TutorialScene";
-    }
 }

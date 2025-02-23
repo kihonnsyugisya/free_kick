@@ -84,7 +84,6 @@ public class UIController : MonoBehaviour
 
         gameOverPanel.yametokuButton.onClick.AddListener(() =>
         {
-            lifeManager.HealFullLife();
             SceneManager.LoadScene("StageSelect");
         });
 

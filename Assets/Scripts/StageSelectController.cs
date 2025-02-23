@@ -1,36 +1,75 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class StageSelectController : MonoBehaviour
+/// <summary>
+/// ステージ選択画面で、ステージボタンを動的に生成するクラス
+/// </summary>
+public class StageSelectManager : MonoBehaviour
 {
+    [SerializeField] private Transform buttonParent; // ボタンの親オブジェクト
     [SerializeField] private StageSelectButton stageSelectButtonPrefab; // ボタンのプレハブ
-    [SerializeField] private Transform buttonParent; // ボタンを配置する親Transform
-    [SerializeField] private Color lockedColor = Color.gray; // 未クリアのステージの色
 
-    private void Start()
+    private Dictionary<StagePrefix, string> stageDisplayMapping;
+
+    private void Awake()
     {
-        List<string> stageSceneNames = SceneListUtility.GetStageSceneNamesInBuildSettings();
-        string lastClearedStage = SaveLoadManager.LoadLastStage();
-        int lastClearedStageNumber = SceneListUtility.GetStageNumber(lastClearedStage);
+        InitializeStageDisplayMapping();
+        CreateStageButtons();
+    }
 
-        foreach (string sceneName in stageSceneNames)
+    /// <summary>
+    /// ステージのプレフィックスごとのボタン表示名を設定
+    /// </summary>
+    private void InitializeStageDisplayMapping()
+    {
+        stageDisplayMapping = new Dictionary<StagePrefix, string>
         {
+            { StagePrefix.A, "Stage1" },
+            { StagePrefix.B, "Stage2" },
+            { StagePrefix.C, "Stage3" },
+            { StagePrefix.D, "Stage4" }
+        };
+    }
+
+    /// <summary>
+    /// ステージ選択ボタンを動的に生成し、シーン遷移の処理を設定
+    /// </summary>
+    private void CreateStageButtons()
+    {
+        foreach (StagePrefix prefix in stageDisplayMapping.Keys)
+        {
+            // ボタンを生成
             StageSelectButton stageSelectButton = Instantiate(stageSelectButtonPrefab, buttonParent);
-            stageSelectButton.buttonLabel.text = sceneName;
+            stageSelectButton.buttonLabel.text = stageDisplayMapping[prefix]; // ボタンの表示名をセット
 
-            // ステージ番号を取得し、クリア済みステージと比較
-            int stageNumber = SceneListUtility.GetStageNumber(sceneName);
-            bool isUnlocked = stageNumber <= lastClearedStageNumber;
+            string sceneName = "Stage1" + prefix.ToString();
 
+            // ロックされているかどうかを判定
+            bool isUnlocked = SaveLoadManager.LoadStagefPrefix(prefix);
+
+            // ボタンのインタラクティブ設定
             stageSelectButton.button.interactable = isUnlocked;
-
-            if (isUnlocked)
+            // アンロックされている場合のみクリックイベントを追加
+            if (isUnlocked || prefix == StagePrefix.A)
             {
+                stageSelectButton.button.interactable = true;
                 stageSelectButton.button.onClick.AddListener(() => SceneManager.LoadScene(sceneName));
             }
         }
     }
+}
 
+
+/// <summary>
+/// ステージのプレフィックスを管理するEnum
+/// </summary>
+public enum StagePrefix
+{
+    A = 1, 
+    B = 2, 
+    C = 3, 
+    D = 4
 }
