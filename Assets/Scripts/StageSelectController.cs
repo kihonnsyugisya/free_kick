@@ -14,6 +14,8 @@ public class StageSelectManager : MonoBehaviour
 
     private Dictionary<StagePrefix, string> stageDisplayMapping;
 
+    public static string currentStageName = null;
+
     private void Awake()
     {
         InitializeStageDisplayMapping();
@@ -27,6 +29,7 @@ public class StageSelectManager : MonoBehaviour
     {
         stageDisplayMapping = new Dictionary<StagePrefix, string>
         {
+            { StagePrefix.Tu, "チュートリアル" },
             { StagePrefix.A, "Stage1" },
             { StagePrefix.B, "Stage2" },
             { StagePrefix.C, "Stage3" },
@@ -53,10 +56,12 @@ public class StageSelectManager : MonoBehaviour
             // ボタンのインタラクティブ設定
             stageSelectButton.button.interactable = isUnlocked;
             // アンロックされている場合のみクリックイベントを追加
-            if (isUnlocked || prefix == StagePrefix.A)
+            if (isUnlocked)
             {
-                stageSelectButton.button.interactable = true;
-                stageSelectButton.button.onClick.AddListener(() => SceneManager.LoadScene(sceneName));
+                stageSelectButton.button.onClick.AddListener(() => {
+                    currentStageName = stageDisplayMapping[prefix];
+                    SceneManager.LoadScene(sceneName);
+                });
             }
         }
     }
@@ -68,6 +73,7 @@ public class StageSelectManager : MonoBehaviour
 /// </summary>
 public enum StagePrefix
 {
+    Tu = 0,
     A = 1, 
     B = 2, 
     C = 3, 

@@ -2255,6 +2255,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3346582207004385917, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3346582207004385917, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3576187328596857131, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
       propertyPath: m_LocalPosition.x
       value: -571.2641

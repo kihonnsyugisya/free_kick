@@ -29,12 +29,14 @@ public class UIController : MonoBehaviour
     [SerializeField] private Slider yAxisSlider;
     [SerializeField] private CanvasGroup stageTexts;
     [SerializeField] private TextMeshProUGUI stageNum;
+    [SerializeField] private TextMeshProUGUI stageNameText;
     [SerializeField] private CanvasGroup darkScreen; // 画面暗転用CanvasGroup
     [SerializeField] private GameObject irisCanvas;
     [SerializeField] private GameObject controllUIs;
     [SerializeField] private GameObject replayText;
-    [SerializeField] private BannerViewController bannerViewController;
     public GameOverPanel gameOverPanel;
+
+    [SerializeField] private BannerViewController bannerViewController;
 
     // ---- ゲームコントローラー要素 -------------------------
     [Header("ゲームコントローラー要素 ------------------------")]
@@ -51,9 +53,12 @@ public class UIController : MonoBehaviour
 
     void Start()
     {
+        
         freeKicker.ball = ball.transform;
 
         var stageName = SceneManager.GetActiveScene().name;
+        SetStageName(stageName);
+
         ShowStageText(SceneListUtility.GetBaseStageName(stageName));
 
         yAxisSlider.OnValueChangedAsObservable().Subscribe(value => {
@@ -80,14 +85,27 @@ public class UIController : MonoBehaviour
                 gameOverPanel.rewardedAdController.ShowAd();
             }).AddTo(this); // GameObjectが破棄されたら自動で解除
 
-         gameOverPanel.rewardedAdController.isReady.Subscribe(ready => gameOverPanel.rewartButton.interactable = ready).AddTo(this);
+        gameOverPanel.rewardedAdController.isReady.Subscribe(ready => gameOverPanel.rewartButton.interactable = ready).AddTo(this);
+
+        gameOverPanel.interstitialAdController.isAdClosed.Subscribe(value => {
+            if (value)
+            {
+                SceneManager.LoadScene("StageSelect");
+            }
+        }).AddTo(this);
 
         gameOverPanel.yametokuButton.onClick.AddListener(() =>
         {
+            // AdMobのインタースティシャル広告を表示
+            if (gameOverPanel.interstitialAdController.CheckShowAd())
+            {
+                gameOverPanel.interstitialAdController.ShowAd();
+                return;
+            }
             SceneManager.LoadScene("StageSelect");
         });
 
-       }
+     }
 
     /// <summary>
     /// UnityEditorでプレイした後になぜかUIが非表示になったじょうたいになるから初期化するようにした
@@ -246,6 +264,16 @@ public class UIController : MonoBehaviour
         ResetBall();
     }
 
+    private void SetStageName(string stageName)
+    {
+        if (SceneListUtility.IsTutrialScene())
+        {
+            stageNameText.text = "Tutorial";
+            return;
+        }
+        string stageNameT = StageSelectManager.currentStageName + "-" + SceneListUtility.GetStageNumber(stageName);
+        stageNameText.text = stageNameT;
+    }
 
 
 }

@@ -1262,7 +1262,6 @@ MonoBehaviour:
   - {fileID: 1497586590}
   - {fileID: 486552886}
   filter: {fileID: 525536110}
-  bannerViewController: {fileID: 1541297884}
 --- !u!1 &950669185
 GameObject:
   m_ObjectHideFlags: 0
@@ -2853,17 +2852,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1533724419}
   m_CullTransparentMesh: 1
---- !u!114 &1541297884 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7780021360569638623, guid: 7a0a0c75fd3233b43ba4345725f8d723, type: 3}
-  m_PrefabInstance: {fileID: 6749123492929029049}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a2d90b8992b64e07b12ef028c0acffb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1698993183
 GameObject:
   m_ObjectHideFlags: 0

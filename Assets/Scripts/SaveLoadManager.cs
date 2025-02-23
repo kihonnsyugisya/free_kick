@@ -26,24 +26,4 @@ public static class SaveLoadManager
         return !string.IsNullOrEmpty(stage);
     }
 
-    /// <summary>
-    /// チュートリアルが完了したかどうかを保存します。
-    /// </summary>
-    public static void SaveTutorialCompleted(bool completed)
-    {
-        // PlayerPrefs に保存（true/false）
-        PlayerPrefs.SetInt("TutorialCompleted", completed ? 1 : 0);
-        PlayerPrefs.Save();
-    }
-
-    /// <summary>
-    /// チュートリアルが完了したかどうかを読み込みます。
-    /// </summary>
-    /// <returns>チュートリアルが完了していればtrue、完了していなければfalse</returns>
-    public static bool LoadTutorialCompleted()
-    {
-        // PlayerPrefs から取得（デフォルト値は 0, 完了していない場合は false）
-        return PlayerPrefs.GetInt("TutorialCompleted", 0) == 1;
-    }
-
 }

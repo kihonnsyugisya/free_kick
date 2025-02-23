@@ -89,6 +89,7 @@ public static class SceneListUtility
                 else
                 {
                     Debug.LogError($"次のステージがビルド設定にありません: {nextSceneName}");
+                    SceneManager.LoadScene("StageSelect");
                 }
             }
             else
@@ -180,12 +181,17 @@ public static class SceneListUtility
         }
         else
         {
-            Debug.LogWarning($"[プレフィックス解析] 無効なプレフィックス: {prefixString}。デフォルト値Aを返します。");
-            return StagePrefix.A;  // 変更：無効なプレフィックスは StagePrefix.A を返す
+            Debug.LogWarning($"[プレフィックス解析] 無効なプレフィックス: {prefixString}。デフォルト値Tuを返します。");
+            return StagePrefix.Tu;  // 変更：無効なプレフィックスは StagePrefix.A を返す
         }
     }
 
-
+    public static bool IsTutrialScene()
+    { 
+        string s = SceneManager.GetActiveScene().name;
+        if (s.Equals("Stage1Tu")) return true;
+        return false;
+    }
 
 
 }

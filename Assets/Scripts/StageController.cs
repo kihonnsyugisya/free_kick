@@ -181,8 +181,7 @@ public class StageController : MonoBehaviour
     /// <param name="sceneName"></param>
     private void SaveStagePrefix(string sceneName)
     {
-        string stagePrefix = SceneListUtility.GetStagePrefix(sceneName);
-        StagePrefix prefix = SceneListUtility.GetStagePrefixEnum(stagePrefix);
+        StagePrefix prefix = SceneListUtility.GetStagePrefixEnum(sceneName);
         SaveLoadManager.SaveStagePrefix(GetNextPrefix(prefix));
     }
     private StagePrefix GetNextPrefix(StagePrefix currentPrefix)
@@ -197,8 +196,8 @@ public class StageController : MonoBehaviour
         }
         else
         {
-            // 最大値に達していた場合は、最初の値（A）を返すなどの処理
-            return StagePrefix.A;
+            Debug.LogWarning("これ以上先のステージが存在しないため、注意してください！！！！");
+            return currentPrefix;
         }
     }
 }

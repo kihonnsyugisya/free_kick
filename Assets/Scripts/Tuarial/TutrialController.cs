@@ -8,12 +8,10 @@ public class TutrialController : MonoBehaviour
 {
     [SerializeField] private List<TutrialMessage> messages;
     [SerializeField] private UnmaskRaycastFilter filter;
-    [SerializeField] private BannerViewController bannerViewController;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        SaveLoadManager.SaveTutorialCompleted(true);
-        bannerViewController.HideAd();
+        SaveLoadManager.SaveStagePrefix(StagePrefix.Tu);
         foreach (TutrialMessage message in messages) 
         {
             message.nextButton.onClick.AddListener(() => { 

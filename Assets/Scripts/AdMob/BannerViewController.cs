@@ -23,7 +23,14 @@ namespace GoogleMobileAds.Sample
             _adUnitId = GetAdUnitIDForIos(AdType.BANNER);
 #endif
             LoadAd();
-            ShowAd();
+            if (SceneListUtility.IsTutrialScene())
+            {
+                HideAd();
+            }
+            else
+            {
+                ShowAd();
+            }
         }
 
         public void CreateBannerView()
