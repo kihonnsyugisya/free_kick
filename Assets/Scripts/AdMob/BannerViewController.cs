@@ -8,7 +8,7 @@ namespace GoogleMobileAds.Sample
     [AddComponentMenu("GoogleMobileAds/Samples/BannerViewController")]
     public class BannerViewController : AdmobUnitBase
     {
-        private BannerView _bannerView;
+        private static BannerView _bannerView;
 
         [Tooltip("広告の表示位置をBottmかTopか設定する（falseでBottm）")]
         [SerializeField] private bool showAtTop = false; // デフォルトでBottomに設定
@@ -22,7 +22,15 @@ namespace GoogleMobileAds.Sample
 #else
             _adUnitId = GetAdUnitIDForIos(AdType.BANNER);
 #endif
-            LoadAd();
+            //LoadAd();
+            //if (SceneListUtility.IsTutrialScene())
+            //{
+            //    HideAd();
+            //}
+            //else
+            //{
+            //    ShowAd();
+            //}
             ShowAd();
         }
 
@@ -48,13 +56,6 @@ namespace GoogleMobileAds.Sample
             if (_bannerView == null)  // バナーが未作成の場合のみ作成
             {
                 CreateBannerView();
-            }
-
-            if (_bannerView != null)  // ここを追加して、念のためチェック
-            {
-                var adRequest = new AdRequest();
-                Debug.Log("バナー広告を読み込んでいます。");
-                _bannerView.LoadAd(adRequest);
             }
         }
 
