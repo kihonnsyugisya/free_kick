@@ -22,15 +22,7 @@ namespace GoogleMobileAds.Sample
 #else
             _adUnitId = GetAdUnitIDForIos(AdType.BANNER);
 #endif
-            //LoadAd();
-            //if (SceneListUtility.IsTutrialScene())
-            //{
-            //    HideAd();
-            //}
-            //else
-            //{
-            //    ShowAd();
-            //}
+            LoadAd();
             ShowAd();
         }
 
