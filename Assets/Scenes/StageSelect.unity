@@ -261,6 +261,7 @@ MonoBehaviour:
   stageSelectButtonPrefab: {fileID: 4786027892424574625, guid: bcd584d6e775c354fa54de2ad62d80e7, type: 3}
   activeStageColor: {r: 0.6317213, g: 0.8867924, b: 0.36531383, a: 1}
   inActiveStageColor: {r: 0.19675621, g: 0.32704395, b: 0.06067795, a: 1}
+  statusNewColor: {r: 0.99371064, g: 0.915883, b: 0.35311094, a: 1}
 --- !u!4 &69580685
 Transform:
   m_ObjectHideFlags: 0

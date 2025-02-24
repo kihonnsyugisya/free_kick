@@ -13,6 +13,7 @@ public class StageSelectManager : MonoBehaviour
     [SerializeField] private StageSelectButton stageSelectButtonPrefab; // ボタンのプレハブ
     [SerializeField] private Color activeStageColor = Color.white;
     [SerializeField] private Color inActiveStageColor = Color.white;
+    [SerializeField] private Color statusNewColor = Color.white;
 
     private Dictionary<StagePrefix, string> stageDisplayMapping;
 
@@ -84,6 +85,12 @@ public class StageSelectManager : MonoBehaviour
                     currentStageName = stageDisplayMapping[prefix];
                     SceneManager.LoadScene(sceneName);
                 });
+            }
+
+            if (isUnlocked == (int)SaveStatus.NEW)
+            {
+                stageSelectButton.statusText.color = statusNewColor;
+                stageSelectButton.StartBlinkingStatusText();
             }
         }
     }

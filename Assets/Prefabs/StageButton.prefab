@@ -273,6 +273,7 @@ MonoBehaviour:
   button: {fileID: 2829525526549644117}
   buttonLabel: {fileID: 7323428806877511565}
   statusText: {fileID: 9114281193534712469}
+  blinkDuration: 1.5
 --- !u!1 &8064083363874864704
 GameObject:
   m_ObjectHideFlags: 0
