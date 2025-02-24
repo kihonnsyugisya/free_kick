@@ -61,8 +61,9 @@ public class StageController : MonoBehaviour
             retrySubscription.Clear();
             isReplay = false;
             string sceneName = SceneManager.GetActiveScene().name;
-            if (SceneListUtility.IsBossStage(sceneName))
+            if (SceneListUtility.IsBossStage(sceneName) || SceneListUtility.IsTutrialScene())
             {
+                SaveStagePrefix(sceneName);
                 await uiController.ShowStageClearText();
                 await Task.Delay(600);
             }
@@ -149,11 +150,10 @@ public class StageController : MonoBehaviour
         {
             isReplay = false;
             string sceneName = SceneManager.GetActiveScene().name;
-            SaveStagePrefix(sceneName);
             if (replayableObject != null) Destroy(replayableObject.gameObject);
             await Task.Delay(1200);
-
-            if (SceneListUtility.IsBossStage(sceneName)) {
+            if (SceneListUtility.IsBossStage(sceneName) || SceneListUtility.IsTutrialScene()) {
+                SaveStagePrefix(sceneName);
                 await uiController.ShowStageClearText();
                 await Task.Delay(1000);
             }
