@@ -186,8 +186,16 @@ public class StageController : MonoBehaviour
         // 今のステージをクリアにする
         SaveLoadManager.SaveStagePrefix(prefix, SaveStatus.CLEAR);
 
-        // 次のステージを解放
-        SaveLoadManager.SaveStagePrefix(GetNextPrefix(prefix), SaveStatus.NEW);
+        // 次のステージプレフィックスを取得
+        StagePrefix nextPrefix = GetNextPrefix(prefix);
+        int nextPrefixStatus = SaveLoadManager.LoadStagePrefix(nextPrefix);
+
+        // 次のステージがロック状態の場合のみ
+        if (nextPrefixStatus == (int)SaveStatus.LOCK)
+        {
+            // 次のステージを解放
+            SaveLoadManager.SaveStagePrefix(nextPrefix, SaveStatus.NEW);
+        }
     }
     private StagePrefix GetNextPrefix(StagePrefix currentPrefix)
     {

@@ -11,6 +11,8 @@ public class StageSelectManager : MonoBehaviour
 {
     [SerializeField] private Transform buttonParent; // ボタンの親オブジェクト
     [SerializeField] private StageSelectButton stageSelectButtonPrefab; // ボタンのプレハブ
+    [SerializeField] private Color activeStageColor = Color.white;
+    [SerializeField] private Color inActiveStageColor = Color.white;
 
     private Dictionary<StagePrefix, string> stageDisplayMapping;
 
@@ -64,10 +66,19 @@ public class StageSelectManager : MonoBehaviour
 
             // ステータスがLOCKの場合、ボタンをインタラクティブにしない
             stageSelectButton.button.interactable = isUnlocked != (int)SaveStatus.LOCK;
+            // カラーブロックを取得
+            ColorBlock colors = stageSelectButton.button.colors;
+
+            // 無効時の色を変更
+            colors.disabledColor = inActiveStageColor;
+
+            // 変更を適用
+            stageSelectButton.button.colors = colors;
 
             // アンロックされている場合のみクリックイベントを追加
             if (isUnlocked != (int)SaveStatus.LOCK)
             {
+                stageSelectButton.button.image.color = activeStageColor;
                 stageSelectButton.button.onClick.AddListener(() => {
                     SaveLoadManager.SaveStagePrefix(prefix, SaveStatus.NON_CLEAR);
                     currentStageName = stageDisplayMapping[prefix];
