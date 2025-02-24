@@ -182,7 +182,12 @@ public class StageController : MonoBehaviour
     private void SaveStagePrefix(string sceneName)
     {
         StagePrefix prefix = SceneListUtility.GetStagePrefixEnum(sceneName);
-        SaveLoadManager.SaveStagePrefix(GetNextPrefix(prefix));
+
+        // 今のステージをクリアにする
+        SaveLoadManager.SaveStagePrefix(prefix, SaveStatus.CLEAR);
+
+        // 次のステージを解放
+        SaveLoadManager.SaveStagePrefix(GetNextPrefix(prefix), SaveStatus.NEW);
     }
     private StagePrefix GetNextPrefix(StagePrefix currentPrefix)
     {

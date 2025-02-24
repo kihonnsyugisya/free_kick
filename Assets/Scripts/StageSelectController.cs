@@ -50,15 +50,26 @@ public class StageSelectManager : MonoBehaviour
 
             string sceneName = "Stage1" + prefix.ToString();
 
-            // ロックされているかどうかを判定
-            bool isUnlocked = SaveLoadManager.LoadStagefPrefix(prefix);
+            int isUnlocked = SaveLoadManager.LoadStagePrefix(prefix);
 
-            // ボタンのインタラクティブ設定
-            stageSelectButton.button.interactable = isUnlocked;
+            // ステージセレクトボタンの表示ステータス設定
+            stageSelectButton.statusText.text = isUnlocked switch
+            {
+                (int)SaveStatus.NEW => "New",
+                (int)SaveStatus.CLEAR => "Clear",
+                (int)SaveStatus.NON_CLEAR => "",
+                (int)SaveStatus.LOCK => "",
+                _ => stageSelectButton.statusText.text // デフォルトの値
+            };
+
+            // ステータスがLOCKの場合、ボタンをインタラクティブにしない
+            stageSelectButton.button.interactable = isUnlocked != (int)SaveStatus.LOCK;
+
             // アンロックされている場合のみクリックイベントを追加
-            if (isUnlocked)
+            if (isUnlocked != (int)SaveStatus.LOCK)
             {
                 stageSelectButton.button.onClick.AddListener(() => {
+                    SaveLoadManager.SaveStagePrefix(prefix, SaveStatus.NON_CLEAR);
                     currentStageName = stageDisplayMapping[prefix];
                     SceneManager.LoadScene(sceneName);
                 });

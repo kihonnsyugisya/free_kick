@@ -8,10 +8,10 @@ public static class SaveLoadManager
     /// <summary>
     /// 最後に到達したpurefixを保存します。
     /// </summary>
-    public static void SaveStagePrefix(StagePrefix currentStagePrefix)
+    public static void SaveStagePrefix(StagePrefix currentStagePrefix, SaveStatus saveStatus)
     {
         // PlayerPrefs に保存
-        PlayerPrefs.SetString(currentStagePrefix.ToString(), currentStagePrefix.ToString());
+        PlayerPrefs.SetInt(currentStagePrefix.ToString(), (int)saveStatus);
         PlayerPrefs.Save();
     }
 
@@ -20,10 +20,17 @@ public static class SaveLoadManager
     /// キーが存在しない場合はデフォルトで false を返します。
     /// </summary>
     /// <returns>最後に保存されたステージ名が存在した場合はtrue、存在しない場合はfalse</returns>
-    public static bool LoadStagefPrefix(StagePrefix loadPrefix)
+    public static int LoadStagePrefix(StagePrefix loadPrefix)
     {
-        string stage = PlayerPrefs.GetString(loadPrefix.ToString(), "");
-        return !string.IsNullOrEmpty(stage);
+        // プレイヤープリファレンスから整数を取得（デフォルト値としてSaveStatus.LOCKの整数値を使用）
+        return PlayerPrefs.GetInt(loadPrefix.ToString(), (int)SaveStatus.LOCK);
     }
+}
 
+public enum SaveStatus
+{ 
+    NEW = 0,
+    CLEAR = 1,
+    NON_CLEAR = 2,
+    LOCK = 3
 }

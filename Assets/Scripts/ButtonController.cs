@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UniRx;
@@ -7,10 +7,10 @@ using UnityEngine.SceneManagement;
 
 public class ButtonController : MonoBehaviour
 {
-    private const int ButtonThrottleTimeMs = 2000; // ƒ{ƒ^ƒ“‚Ì˜A‘±ƒNƒŠƒbƒN–h~ŠÔ (ms)
-    [SerializeField] private Button reviewButton; // ƒŒƒrƒ…[‹@”\ƒ{ƒ^ƒ“
-    [SerializeField] private Button interstitialButton; // ƒCƒ“ƒXƒeƒ{ƒ^ƒ“
-    [SerializeField] private InterstitialAdController interstitialAdController; // LŠÇ—ƒRƒ“ƒgƒ[ƒ‰
+    private const int ButtonThrottleTimeMs = 2000; // ãƒœã‚¿ãƒ³ã®é€£ç¶šã‚¯ãƒªãƒƒã‚¯é˜²æ­¢æ™‚é–“ (ms)
+    [SerializeField] private Button reviewButton; // ãƒ¬ãƒ“ãƒ¥ãƒ¼æ©Ÿèƒ½ãƒœã‚¿ãƒ³
+    [SerializeField] private Button interstitialButton; // ã‚¤ãƒ³ã‚¹ãƒ†ãƒœã‚¿ãƒ³
+    [SerializeField] private InterstitialAdController interstitialAdController; // åºƒå‘Šç®¡ç†ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -18,14 +18,8 @@ public class ButtonController : MonoBehaviour
         ConfigureInterstitialButton();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     /// <summary>
-    /// ƒCƒ“ƒXƒeƒ{ƒ^ƒ“‚ÌƒNƒŠƒbƒNƒCƒxƒ“ƒg‚ğİ’èB
+    /// ã‚¤ãƒ³ã‚¹ãƒ†ãƒœã‚¿ãƒ³ã®ã‚¯ãƒªãƒƒã‚¯ã‚¤ãƒ™ãƒ³ãƒˆã‚’è¨­å®šã€‚
     /// </summary>
     private void ConfigureInterstitialButton()
     {
@@ -36,7 +30,7 @@ public class ButtonController : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒCƒ“ƒXƒe•\¦
+    /// ã‚¤ãƒ³ã‚¹ãƒ†è¡¨ç¤º
     /// </summary>
     private void ShowAd()
     {
@@ -46,14 +40,14 @@ public class ButtonController : MonoBehaviour
         }
         else
         {
-            // ‰æ–Ê‘JˆÚ‚Æ‚©
+            // ç”»é¢é·ç§»ã¨ã‹
             //SceneManager.LoadScene("TitleScene");
             Debug.Log("koko");
         }
     }
 
     /// <summary>
-    /// ƒŒƒrƒ…[‹@”\ƒ{ƒ^ƒ“‚ÌƒNƒŠƒbƒNƒCƒxƒ“ƒg‚ğİ’èB
+    /// ãƒ¬ãƒ“ãƒ¥ãƒ¼æ©Ÿèƒ½ãƒœã‚¿ãƒ³ã®ã‚¯ãƒªãƒƒã‚¯ã‚¤ãƒ™ãƒ³ãƒˆã‚’è¨­å®šã€‚
     /// </summary>
     private void ConfigureReviewButton()
     {
@@ -64,6 +58,6 @@ public class ButtonController : MonoBehaviour
     }
 }
 
-//admob‚¢‚ê‚½‚©‚çAATT‚Æ‚©ƒoƒi[L‚Æ‚©o‚¹‚é‚Å‚àƒV[ƒ“‚Â‚­‚é‚Æ‚±‚ë‚©‚çB‚»‚ê‚ª‚Å‚«‚½‚çÀ‹@‚Éƒrƒ‹ƒh‚µ‚Ä‚¿‚á‚ñ‚ÆƒeƒXƒgLo‚¹‚Ä‚é‚©Œ©‚éB
-//    ‚Å‚«‚½‚çGDRP‚É‚Â‚¢‚Ä‚Ç‚¤‚½‚¢‚¨‚¤‚·‚é‚Ì‚©‚à‚µ‚ç‚×‚ÄƒiƒŒƒbƒW‚É‘Î‰ô‚Ü‚Æ‚ß‚½‚¢
+//admobã„ã‚ŒãŸã‹ã‚‰ã€ATTã¨ã‹ãƒãƒŠãƒ¼åºƒå‘Šã¨ã‹å‡ºã›ã‚‹ã§ã‚‚ã‚·ãƒ¼ãƒ³ã¤ãã‚‹ã¨ã“ã‚ã‹ã‚‰ã€‚ãã‚ŒãŒã§ããŸã‚‰å®Ÿæ©Ÿã«ãƒ“ãƒ«ãƒ‰ã—ã¦ã¡ã‚ƒã‚“ã¨ãƒ†ã‚¹ãƒˆåºƒå‘Šå‡ºã›ã¦ã‚‹ã‹è¦‹ã‚‹ã€‚
+//    ã§ããŸã‚‰GDRPã«ã¤ã„ã¦ã©ã†ãŸã„ãŠã†ã™ã‚‹ã®ã‹ã‚‚ã—ã‚‰ã¹ã¦ãƒŠãƒ¬ãƒƒã‚¸ã«å¯¾å¿œç­–ã¾ã¨ã‚ãŸã„
     

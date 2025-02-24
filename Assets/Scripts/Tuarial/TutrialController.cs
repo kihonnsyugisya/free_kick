@@ -11,7 +11,6 @@ public class TutrialController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        SaveLoadManager.SaveStagePrefix(StagePrefix.Tu);
         foreach (TutrialMessage message in messages) 
         {
             message.nextButton.onClick.AddListener(() => { 

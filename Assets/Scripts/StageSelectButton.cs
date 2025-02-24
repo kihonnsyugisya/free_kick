@@ -1,12 +1,14 @@
-using TMPro;
+ï»¿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class StageSelectButton : MonoBehaviour
 {
-    // ƒ{ƒ^ƒ“ƒRƒ“ƒ|[ƒlƒ“ƒgiƒNƒŠƒbƒNƒCƒxƒ“ƒg‚È‚Ç‚Ég—pj
+    // ãƒœã‚¿ãƒ³ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆï¼ˆã‚¯ãƒªãƒƒã‚¯ã‚¤ãƒ™ãƒ³ãƒˆãªã©ã«ä½¿ç”¨ï¼‰
     public Button button;
 
-    // ƒ{ƒ^ƒ“‚É•\¦‚·‚éƒeƒLƒXƒgƒRƒ“ƒ|[ƒlƒ“ƒg
+    // ãƒœã‚¿ãƒ³ã«è¡¨ç¤ºã™ã‚‹ãƒ†ã‚­ã‚¹ãƒˆã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
     public TextMeshProUGUI buttonLabel;
+
+    public TextMeshProUGUI statusText;
 }

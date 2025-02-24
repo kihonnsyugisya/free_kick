@@ -37,6 +37,7 @@ public class UIController : MonoBehaviour
     public GameOverPanel gameOverPanel;
 
     [SerializeField] private BannerViewController bannerViewController;
+    private static int interstitalCount = 0;
 
     // ---- ゲームコントローラー要素 -------------------------
     [Header("ゲームコントローラー要素 ------------------------")]
@@ -90,18 +91,23 @@ public class UIController : MonoBehaviour
         gameOverPanel.interstitialAdController.isAdClosed.Subscribe(value => {
             if (value)
             {
+                interstitalCount++;
                 SceneManager.LoadScene("StageSelect");
             }
         }).AddTo(this);
 
         gameOverPanel.yametokuButton.onClick.AddListener(() =>
         {
-            // AdMobのインタースティシャル広告を表示
-            if (gameOverPanel.interstitialAdController.CheckShowAd())
+            if (interstitalCount % 3 == 0) 
             {
-                gameOverPanel.interstitialAdController.ShowAd();
-                return;
+                // AdMobのインタースティシャル広告を表示
+                if (gameOverPanel.interstitialAdController.CheckShowAd())
+                {
+                    gameOverPanel.interstitialAdController.ShowAd();
+                    return;
+                }
             }
+            StartCoroutine(InAppReviewManager.RequestReview());
             SceneManager.LoadScene("StageSelect");
         });
 

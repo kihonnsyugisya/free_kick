@@ -71,8 +71,10 @@ public class InitialController : MonoBehaviour
         // 点滅アニメーションを停止
         loadingText.DOKill();
 
+        bool isFirstPlay = SaveLoadManager.LoadStagePrefix(StagePrefix.Tu) == (int)SaveStatus.LOCK;
+
         // プレイヤーが初めてプレイした場合は "チュートリアル"、それ以外は "StageSelect" に遷移
-        string nextStage = SaveLoadManager.LoadStagefPrefix(StagePrefix.Tu) ? "StageSelect" : "Stage1Tu";
+        string nextStage = isFirstPlay ? "Stage1Tu" : "StageSelect";
 
         // ロード画面をフェードアウトさせ、完了後にシーン遷移する（0.5秒の遅延）
         loadingCanvasGroup.DOFade(0, 0.5f).OnComplete(() => {
