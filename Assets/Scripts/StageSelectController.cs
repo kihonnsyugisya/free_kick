@@ -3,26 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
+using System.Collections; // DOTween を使用
 
 /// <summary>
 /// ステージ選択画面で、ステージボタンを動的に生成するクラス
 /// </summary>
 public class StageSelectManager : MonoBehaviour
 {
-    [SerializeField] private Transform buttonParent; // ボタンの親オブジェクト
+    [SerializeField] private VerticalLayoutGroup buttonParent; // ボタンの親オブジェクト
     [SerializeField] private StageSelectButton stageSelectButtonPrefab; // ボタンのプレハブ
     [SerializeField] private Color activeStageColor = Color.white;
     [SerializeField] private Color inActiveStageColor = Color.white;
     [SerializeField] private Color statusNewColor = Color.white;
+    [SerializeField] private float slideInDuration = 0.5f; // スライドの時間
+    [SerializeField] private float slideInDelay = 0.1f; // 各ボタンの遅延時間
+    [SerializeField] private float slideStartOffset = -500f; // 初期位置オフセット（左にずらす）
 
+    private CanvasGroup canvasGroup;
     private Dictionary<StagePrefix, string> stageDisplayMapping;
 
     public static string currentStageName = null;
 
-    private void Awake()
+    private void Start()
     {
+        canvasGroup = buttonParent.GetComponent<CanvasGroup>();
         InitializeStageDisplayMapping();
         CreateStageButtons();
+        // 🔽🔽🔽 ここから Tween アニメーション追加 🔽🔽🔽
+        StartCoroutine(DelayedSlideIn());
     }
 
     /// <summary>
@@ -45,10 +54,11 @@ public class StageSelectManager : MonoBehaviour
     /// </summary>
     private void CreateStageButtons()
     {
+        canvasGroup.alpha = 0;
         foreach (StagePrefix prefix in stageDisplayMapping.Keys)
         {
             // ボタンを生成
-            StageSelectButton stageSelectButton = Instantiate(stageSelectButtonPrefab, buttonParent);
+            StageSelectButton stageSelectButton = Instantiate(stageSelectButtonPrefab, buttonParent.transform);
             stageSelectButton.buttonLabel.text = stageDisplayMapping[prefix]; // ボタンの表示名をセット
 
             string sceneName = "Stage1" + prefix.ToString();
@@ -67,13 +77,10 @@ public class StageSelectManager : MonoBehaviour
 
             // ステータスがLOCKの場合、ボタンをインタラクティブにしない
             stageSelectButton.button.interactable = isUnlocked != (int)SaveStatus.LOCK;
-            // カラーブロックを取得
+
+            // カラーブロックを取得して無効時の色を変更
             ColorBlock colors = stageSelectButton.button.colors;
-
-            // 無効時の色を変更
             colors.disabledColor = inActiveStageColor;
-
-            // 変更を適用
             stageSelectButton.button.colors = colors;
 
             // アンロックされている場合のみクリックイベントを追加
@@ -94,6 +101,44 @@ public class StageSelectManager : MonoBehaviour
             }
         }
     }
+
+    private IEnumerator DelayedSlideIn()
+    {
+        yield return new WaitForEndOfFrame(); // フレームの最後まで待つ
+        SlideInSelectButtons();
+    }
+
+    private void SlideInSelectButtons()
+    {
+        int index = 0; // 階段状の遅延をつけるためのカウンター
+
+        buttonParent.enabled = false;
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(buttonParent.GetComponent<RectTransform>());
+
+        canvasGroup.alpha = 1.0f;
+
+        foreach (Transform button in buttonParent.transform)
+        {
+            RectTransform rectTransform = button.GetComponent<RectTransform>();
+
+            //// 初期位置を左側にオフセット
+            Vector2 originalPosition = rectTransform.anchoredPosition;
+            float buttonWidth = rectTransform.rect.width; // ボタンの幅を取得
+                                                          // 初期位置を **右側** にオフセット
+            rectTransform.anchoredPosition = new Vector2(originalPosition.x + buttonWidth + 300, originalPosition.y);
+
+            // スライドインアニメーション
+            rectTransform.DOAnchorPos(originalPosition, slideInDuration)
+                .SetEase(Ease.OutBack)
+                .SetDelay(index * slideInDelay);
+
+            index++; // 遅延用カウンターを増やす
+        }
+    }
+
+
+
 }
 
 
@@ -103,8 +148,8 @@ public class StageSelectManager : MonoBehaviour
 public enum StagePrefix
 {
     Tu = 0,
-    A = 1, 
-    B = 2, 
-    C = 3, 
+    A = 1,
+    B = 2,
+    C = 3,
     D = 4
 }

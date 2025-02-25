@@ -257,11 +257,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4caaceca394d06145925d3587ae341ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonParent: {fileID: 1475295100}
+  buttonParent: {fileID: 1475295102}
   stageSelectButtonPrefab: {fileID: 4786027892424574625, guid: bcd584d6e775c354fa54de2ad62d80e7, type: 3}
   activeStageColor: {r: 0.6317213, g: 0.8867924, b: 0.36531383, a: 1}
   inActiveStageColor: {r: 0.19675621, g: 0.32704395, b: 0.06067795, a: 1}
   statusNewColor: {r: 0.99371064, g: 0.915883, b: 0.35311094, a: 1}
+  slideInDuration: 0.5
+  slideInDelay: 0.1
+  slideStartOffset: -500
 --- !u!4 &69580685
 Transform:
   m_ObjectHideFlags: 0
@@ -682,7 +685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.27450982}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1237,6 +1240,7 @@ GameObject:
   - component: {fileID: 1475295103}
   - component: {fileID: 1475295102}
   - component: {fileID: 1475295101}
+  - component: {fileID: 1475295105}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -1341,6 +1345,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1475295099}
   m_CullTransparentMesh: 1
+--- !u!225 &1475295105
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1475295099}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1844996371
 GameObject:
   m_ObjectHideFlags: 0
