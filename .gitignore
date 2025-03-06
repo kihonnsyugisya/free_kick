@@ -92,5 +92,7 @@ crashlytics-build.properties
 
 /[Aa]ssets/Quirky Series Ultimate/
 
+/[Aa]ssets/FootballPitch/
+
 *.vsconfig
 *.fbx

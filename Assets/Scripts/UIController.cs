@@ -72,9 +72,12 @@ public class UIController : MonoBehaviour
             freeKicker.KickBall();
         });
 
-        freeKicker.kickerKnee.OnBallHit.Subscribe(_ => {
-            Shoot();
-        }).AddTo(this);
+        freeKicker.kickerKnee.OnBallHit
+            .ThrottleFirst(System.TimeSpan.FromSeconds(1)) // 2度蹴り防止
+            .Subscribe(_ => {
+                Shoot();
+            })
+            .AddTo(this);
 
         freeKicker.hasKicked.Skip(1).Subscribe(value => {
             if(value) ShowControllUis(!value);
@@ -180,10 +183,10 @@ public class UIController : MonoBehaviour
     public async Task ShowClearText()
     {
         //FadeIn(clearText);
-        foreach (Transform ui in controllUIs.transform)
-        {
-            ui.gameObject.SetActive(false);
-        }
+        //foreach (Transform ui in controllUIs.transform)
+        //{
+        //    ui.gameObject.SetActive(false);
+        //}
         await clearTextEffect.ShowClearText("CLEAR");
     }
 
