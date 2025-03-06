@@ -9,7 +9,6 @@ namespace GoogleMobileAds.Sample
     public class BannerViewController : AdmobUnitBase
     {
         private static BannerView _bannerView;
-
         [Tooltip("広告の表示位置をBottmかTopか設定する（falseでBottm）")]
         [SerializeField] private bool showAtTop = false; // デフォルトでBottomに設定
 
@@ -59,14 +58,18 @@ namespace GoogleMobileAds.Sample
         }
 
 
+        private bool _isBannerVisible = false; // バナー表示状態を管理
+
         public void ShowAd()
         {
-            if (_bannerView != null)
+            if (_bannerView != null && !_isBannerVisible) // すでに表示されていない場合のみ
             {
                 Debug.Log("バナー広告を表示しています。");
                 _bannerView.Show();
+                _isBannerVisible = true; // 表示状態を更新
             }
         }
+
 
         public void HideAd()
         {
@@ -74,6 +77,7 @@ namespace GoogleMobileAds.Sample
             {
                 Debug.Log("バナー広告を非表示にしています。");
                 _bannerView.Hide();
+                _isBannerVisible = false; // 表示状態を更新
             }
         }
 
@@ -84,6 +88,7 @@ namespace GoogleMobileAds.Sample
                 Debug.Log("バナー広告ビューを破棄しています。");
                 _bannerView.Destroy();
                 _bannerView = null;
+                _isBannerVisible = false; // 表示状態を更新
             }
         }
 

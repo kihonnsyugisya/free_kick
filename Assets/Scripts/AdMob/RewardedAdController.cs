@@ -52,7 +52,7 @@ namespace GoogleMobileAds.Sample
                 DestroyAd();
             }
 
-            Debug.Log("リワード広告を読み込んでいます。");
+            //Debug.Log("リワード広告を読み込んでいます。");
 
             // 広告を読み込むためのリクエストを作成します。
             var adRequest = new AdRequest();
@@ -63,20 +63,20 @@ namespace GoogleMobileAds.Sample
                 // エラーがある場合は処理を中断します。
                 if (error != null)
                 {
-                    Debug.LogError("リワード広告の読み込みに失敗しました : " + error);
+                    //Debug.LogError("リワード広告の読み込みに失敗しました : " + error);
                     isReady.Value = false;
                     return;
                 }
                 // 広告がnullの場合はエラーを出力します。
                 if (ad == null)
                 {
-                    Debug.LogError("予期しないエラー：nullの広告とnullのエラーが発生しました。");
+                    //Debug.LogError("予期しないエラー：nullの広告とnullのエラーが発生しました。");
                     isReady.Value = false;
                     return;
                 }
 
                 // 広告の読み込みが成功した場合の処理です。
-                Debug.Log("リワード広告が読み込まれました : " + ad.GetResponseInfo());
+                //Debug.Log("リワード広告が読み込まれました : " + ad.GetResponseInfo());
                 _rewardedAd = ad;
 
                 // 広告のイベントハンドラーを登録します。
@@ -97,7 +97,7 @@ namespace GoogleMobileAds.Sample
         {
             if (_rewardedAd != null && _rewardedAd.CanShowAd())
             {
-                Debug.Log("リワード広告を表示しています。");
+                //Debug.Log("リワード広告を表示しています。");
                 isShowedAd = true;
                 _rewardedAd.Show((Reward reward) =>
                 {
